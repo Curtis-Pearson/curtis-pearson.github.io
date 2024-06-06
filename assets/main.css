@@ -1,0 +1,94 @@
+body {
+    background-color: #222;
+    color: white;
+    margin: 0;
+}
+
+.container {
+    margin: auto;
+    width: 50%;
+    padding: 10px;
+}
+
+.layout {
+    padding: 50px;
+    display: grid;
+    grid-row-gap: 50px;
+    grid-template-columns: 1fr;
+}
+
+h1 {
+    font-size: 3vh;
+    text-align: center;
+}
+
+h2 {
+    font-size: 2vh;
+    text-align: justify;
+    text-justify: inter-word;
+}
+
+.about {
+    opacity: 1;
+}
+
+.about {
+    opacity: 1;
+}
+
+.skills {
+    opacity: 1;
+}
+
+.projects {
+    opacity: 1;
+}
+
+.links {
+    opacity: 1;
+}
+
+.logos {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: min-content;
+    gap: 1vh;
+    font-size: 3vh;
+    opacity: 1;
+}
+
+.logos img {
+    height: 3vh;
+    width: 3vh;
+}
+
+.logos i {
+    height: 3vh;
+    width: 3vh;
+}
+
+.fa-python {
+    color: #ffde57;
+}
+
+.fa-html5 {
+    color: #e34f26;
+}
+
+.fa-css3-alt {
+    color: #264de4;
+}
+
+.fa-js {
+    color: #f7df1e;
+}
+
+.fa-php {
+    color: #ac5cd9;
+    position: relative;
+    left: -.5vh;
+}
+
+.fa-envelope {
+    color: white;
+}
