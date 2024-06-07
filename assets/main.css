@@ -40,7 +40,6 @@ body {
 .layout {
     width: 80%;
     margin: 0 auto;
-    padding: 5px;
     display: grid;
     grid-template-columns: 1fr;
 }
