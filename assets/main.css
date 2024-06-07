@@ -153,5 +153,7 @@ h2 {
   
 .bounce {
     animation: bounce 0.7s ease-in-out;
+    will-change: transform;
+    backface-visibility: hidden;
 }
   
