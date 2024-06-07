@@ -64,6 +64,18 @@ h2 {
     text-justify: inter-word;
 }
 
+.about {
+    background-color: #0077b5;
+}
+
+.skills {
+    background-color: #2dba4e;
+}
+
+.projects {
+    background-color: #e34f26;
+}
+
 .header {
     width: 100%;
     align-items: center;
