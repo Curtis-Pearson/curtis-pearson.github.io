@@ -39,7 +39,6 @@ body {
 
 .layout {
     width: 80%;
-    padding: 20px;
     display: grid;
     grid-template-columns: 1fr;
 }
