@@ -17,7 +17,6 @@ body {
     font-family: "Lato";
     background-color: #2E1C2B;
     color: #eaeaea;
-    margin: 0;
     overflow: hidden;
 }
 
@@ -38,11 +37,23 @@ body {
 
 .layout {
     margin: auto;
-    width: 50%;
-    padding: 50px;
+    width: 90%;
+    padding: 20px;
     display: grid;
-    grid-row-gap: 50px;
+    grid-row-gap: 20px;
     grid-template-columns: 1fr;
+}
+
+@media (min-width:768px) {
+    .glow {
+        opacity: 0;
+    }
+
+    .layout {
+        width: 50%;
+        padding: 50px;
+        grid-row-gap: 50px;
+    }
 }
 
 h1 {
