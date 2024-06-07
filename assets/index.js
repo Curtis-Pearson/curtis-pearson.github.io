@@ -25,7 +25,7 @@ function initAnimHandler(event) {
 document.addEventListener('DOMContentLoaded', function() {
     var rightLogos = document.querySelector('.right').children;
     var leftLogos = document.querySelector('.left').children;
-    var delayIncrement = 0.1;
+    var delayIncrement = 0.3;
 
     for (var i = 0; i < rightLogos.length; i++) {
         var child = rightLogos[i].children[0];
