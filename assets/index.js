@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 const devIcons = document.querySelectorAll('[class^="devicon"]');
-const faIcons = document.querySelectorAll('[class^="fa"]');
+const faIcons = document.querySelectorAll('[class^="fa-"]');
 
 function toggleBounce(event) {
     event.target.classList.toggle("bounce");
