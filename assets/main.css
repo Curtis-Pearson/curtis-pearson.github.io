@@ -46,12 +46,13 @@ body {
 }
 
 h1 {
-    font-family: "Lato-Bold";
+    font-family: "Lato";
     font-size: 4vh;
-    text-shadow: 5px 5px 4px #050404;
+    text-shadow: 0px 5px 4px #050404;
 }
 
 h2 {
+    opacity: 0;
     font-family: "Lato-Thin";
     font-size: 2vh;
     text-align: justify;
@@ -84,7 +85,7 @@ h2 {
     grid-auto-flow: column;
     grid-auto-columns: min-content;
     gap: 2vh;
-    text-shadow: 5px 5px 4px #050404;
+    text-shadow: 0px 5px 4px #050404;
     font-size: 4vh;
     opacity: 1;
 }
@@ -142,12 +143,12 @@ h2 {
 
 }
 
-.fa-linkedin:hover {
-    color: #0077b5;
-}
-
 .fa-github:hover {
     color: #2dba4e;
+}
+
+.fa-linkedin:hover {
+    color: #0077b5;
 }
 
 @keyframes bounce {
@@ -176,4 +177,49 @@ h2 {
     will-change: transform;
     backface-visibility: hidden;
 }
-  
+
+@keyframes fadeFromRight {
+    0% {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.fade-from-right {
+    opacity: 0;
+    animation: fadeFromRight 0.5s forwards;
+}
+
+@keyframes fadeFromLeft {
+    0% {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.fade-from-left {
+    opacity: 0;
+    animation: fadeFromLeft 0.5s forwards;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.fade-in {
+    opacity: 0;
+    animation: fadeIn 0.5s ease-in-out forwards;
+}
