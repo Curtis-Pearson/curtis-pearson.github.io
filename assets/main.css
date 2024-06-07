@@ -2,6 +2,18 @@ body {
     background-color: #2E1C2B;
     color: #eaeaea;
     margin: 0;
+    overflow: hidden;
+}
+
+.glow {
+    position: absolute;
+    width: 100vh;
+    height: 100vh;
+    border-radius: 50%;
+    pointer-events: none;
+    background: radial-gradient(circle, #4A1942 0%, transparent 70%);
+    transform: translate(-50%, -50%);
+    mix-blend-mode: color-dodge;
 }
 
 .container {

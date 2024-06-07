@@ -19,3 +19,9 @@ faIcons.forEach(icon => {
     icon.addEventListener('mouseover', toggleBounce);
     icon.addEventListener('mouseleave', toggleBounce);
 })
+
+document.addEventListener('mousemove', function(event) {
+    const glow = document.querySelector('.glow');
+    glow.style.left = `${event.pageX}px`;
+    glow.style.top = `${event.pageY}px`;
+});
