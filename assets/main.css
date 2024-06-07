@@ -1,4 +1,20 @@
+@font-face {
+    font-family: "Lato";
+    src: url("./fonts/Lato-Regular.ttf");
+}
+
+@font-face {
+    font-family: "Lato-Bold";
+    src: url("./fonts/Lato-Bold.ttf");
+}
+
+@font-face {
+    font-family: "Lato-Thin";
+    src: url("./fonts/Lato-Thin.ttf");
+}
+
 body {
+    font-family: "Lato";
     background-color: #2E1C2B;
     color: #eaeaea;
     margin: 0;
@@ -30,10 +46,13 @@ body {
 }
 
 h1 {
-    font-size: 3vh;
+    font-family: "Lato-Bold";
+    font-size: 4vh;
+    text-shadow: 5px 5px 4px #050404;
 }
 
 h2 {
+    font-family: "Lato-Thin";
     font-size: 2vh;
     text-align: justify;
     text-justify: inter-word;
@@ -47,6 +66,7 @@ h2 {
 .header {
     display: grid;
     grid-template-columns: 1fr auto;
+    column-gap: 2vh;
     align-items: center;
     width: 100%;
 }
@@ -63,8 +83,9 @@ h2 {
     display: grid;
     grid-auto-flow: column;
     grid-auto-columns: min-content;
-    gap: 1vh;
-    font-size: 3vh;
+    gap: 2vh;
+    text-shadow: 5px 5px 4px #050404;
+    font-size: 4vh;
     opacity: 1;
 }
 
@@ -96,9 +117,8 @@ h2 {
     color: white;
 }
 
-.fa-php {
-    position: relative;
-    left: -.5vh;
+.devicon-cplusplus-plain {
+    padding-right: .5vh;
 }
 
 .fa-python:hover {
