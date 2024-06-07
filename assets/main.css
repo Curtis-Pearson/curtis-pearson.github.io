@@ -64,6 +64,10 @@ h2 {
     text-justify: inter-word;
 }
 
+.layout {
+    background-color: #ffde57;
+}
+
 .about {
     background-color: #0077b5;
 }
