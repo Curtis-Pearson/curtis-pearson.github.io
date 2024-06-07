@@ -1,19 +1,24 @@
-function initialAnimEnd(target, animName) {
-    target.removeAttribute('style');
-    target.classList.remove(animName);
-    target.removeEventListener('animationend', animHandler);
+function initBounceHandler(event) {
+    event.target.classList.toggle('hover');
+    event.target.classList.toggle("bounce");
+    event.target.removeEventListener('animationend', initBounceHandler);
 }
 
-function animHandler(event) {
-    switch (event.animationName) {
-        case 'fadeFromRight':
-            initialAnimEnd(event.target, 'fade-from-right');
-            break; 
-        case 'fadeFromLeft':
-            initialAnimEnd(event.target, 'fade-from-left');
-            break;
-        default:
-            break;
+function initAnimEnd(event, animName) {
+    event.target.removeAttribute('style');
+    event.target.classList.remove(animName);
+    event.target.removeEventListener('animationend', initAnimHandler);
+    
+    event.target.classList.toggle('hover');
+    event.target.classList.toggle("bounce");
+    event.target.addEventListener('animationend', initBounceHandler);
+}
+
+function initAnimHandler(event) {
+    if (event.animationName == 'fadeFromRight') {
+        initAnimEnd(event, 'fade-from-right');
+    } else {
+        initAnimEnd(event, 'fade-from-left');
     }
 }
 
@@ -25,40 +30,54 @@ document.addEventListener('DOMContentLoaded', function() {
     for (var i = 0; i < rightLogos.length; i++) {
         var child = rightLogos[i].children[0];
         child.style.animationDelay = i * delayIncrement + 's';
-        child.addEventListener('animationend', animHandler);
+        child.addEventListener('animationend', initAnimHandler);
     }
 
     for (var i = leftLogos.length - 1; i >= 0; i--) {
         leftLogos[i].style.animationDelay = ((leftLogos.length - i - 1) + rightLogos.length) * delayIncrement + 's'
-        leftLogos[i].addEventListener('animationend', animHandler);
+        leftLogos[i].addEventListener('animationend', initAnimHandler);
     }
-});
+    
+    const icons = document.querySelectorAll('[class^="devicon"], [class^="fa-"]');
 
-const devIcons = document.querySelectorAll('[class^="devicon"]');
-const faIcons = document.querySelectorAll('[class^="fa-"]');
+    icons.forEach(icon => {
+        icon.addEventListener('mouseover', event => {
+            event.target.classList.toggle("bounce");
+        });
+        icon.addEventListener('mouseleave', event => {
+            event.target.classList.toggle("bounce");
+        });
+    });
 
-function toggleBounce(event) {
-    event.target.classList.toggle("bounce");
-}
-
-function toggleColored(event) {
-    event.target.classList.toggle("colored");
-    toggleBounce(event);
-}
-
-devIcons.forEach(icon => {
-    icon.addEventListener('mouseover', toggleColored);
-    icon.addEventListener('mouseleave', toggleColored);
-});
-
-faIcons.forEach(icon => {
-    icon.addEventListener('mouseover', toggleBounce);
-    icon.addEventListener('mouseleave', toggleBounce);
-})
-
-document.addEventListener('mousemove', function(event) {
     const glow = document.querySelector('.glow');
-    glow.style.left = `${event.pageX}px`;
-    glow.style.top = `${event.pageY}px`;
+    const mediaQuery = window.matchMedia('(min-width:786px)');
+
+    function updateGlowPosition(event) {
+        glow.style.left = `${event.pageX}px`;
+        glow.style.top = `${event.pageY}px`;
+    }
+
+    function centerGlow(event) {
+        const containerRect = document.querySelector('.container').getBoundingClientRect();
+        glow.style.left = `${containerRect.left + containerRect.width / 2}px`;
+        glow.style.top = `${containerRect.top + containerRect.height / 2}px`;
+    }
+
+    function handleMediaChange(event) {
+        if (event.matches) {
+            document.addEventListener('mousemove', updateGlowPosition);
+            window.removeEventListener('resize', centerGlow);
+        } else {
+            document.removeEventListener('mousemove', updateGlowPosition);
+            centerGlow();
+            window.addEventListener('resize', centerGlow);
+        }
+    }
+
+    handleMediaChange(mediaQuery);
+    mediaQuery.addEventListener('change', handleMediaChange);
 });
+
+
+
 

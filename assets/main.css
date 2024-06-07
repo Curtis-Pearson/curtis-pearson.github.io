@@ -21,12 +21,18 @@ body {
 }
 
 .glow {
-    display: none;
+    position: absolute;
+    width: 100vh;
+    height: 100vh;
+    border-radius: 50%;
+    pointer-events: none;
+    background: radial-gradient(circle, #4A1942 0%, transparent 70%);
+    transform: translate(-50%, -50%);
+    mix-blend-mode: color-dodge;
 }
 
 .container {
     width: 100%;
-    padding: 10px;
     display: flex;
     justify-content: center;
 }
@@ -35,27 +41,13 @@ body {
     width: 80%;
     padding: 20px;
     display: grid;
-    grid-row-gap: 20px;
     grid-template-columns: 1fr;
 }
 
 @media (min-width:768px) {
-    .glow {
-        display: block;
-        position: absolute;
-        width: 100vh;
-        height: 100vh;
-        border-radius: 50%;
-        pointer-events: none;
-        background: radial-gradient(circle, #4A1942 0%, transparent 70%);
-        transform: translate(-50%, -50%);
-        mix-blend-mode: color-dodge;
-    }
-
     .layout {
         width: 70%;
         padding: 40px;
-        grid-row-gap: 40px;
     }
 }
 
@@ -72,26 +64,24 @@ h2 {
     text-justify: inter-word;
 }
 
-.about {
-    display: block;
-}
-
-.skills {
-    display: grid;
-    grid-template-rows: auto auto;
-    grid-template-columns: 1fr;
-}
-
-.projects {
-    opacity: 1;
-}
-
 .header {
+    width: 100%;
+    align-items: center;
     display: grid;
     grid-template-columns: 1fr auto;
     column-gap: 2vh;
-    align-items: center;
-    width: 100%;
+}
+
+.about .logos {
+    margin-right: 1vh;
+}
+
+.skills .header {
+    grid-template-columns: auto 1fr;
+}
+
+.skills h1 {
+    text-align: right;
 }
 
 .logos {
@@ -100,15 +90,6 @@ h2 {
     grid-auto-columns: min-content;
     gap: 2vh;
     text-shadow: 0px 5px 4px #050404;
-    font-size: 4vh;
-    opacity: 1;
-}
-
-.centered {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
 }
 
 .logos i {
@@ -116,50 +97,77 @@ h2 {
     transform: translateX(0);
     height: 3vh;
     width: 3vh;
+    font-size: 4vh;
 }
 
+.fa-linkedin,
+.fa-github,
+.fa-envelope,
 .fa-python,
+.devicon-c-plain,
+.devicon-csharp-plain,
+.devicon-cplusplus-plain,
 .fa-html5,
 .fa-css3-alt,
 .fa-js,
-.fa-php,
-.fa-linkedin,
-.fa-github,
-.fa-envelope {
+.fa-php
+ {
     color: white;
+    transition: color .2s ease-in-out;
 }
 
 .devicon-cplusplus-plain {
     padding-right: .5vh;
 }
 
-.fa-python:hover {
-    color: #ffde57;
-}
-
-.fa-html5:hover {
-    color: #e34f26;
-}
-
-.fa-css3-alt:hover {
-    color: #264de4;
-}
-
-.fa-js:hover {
-    color: #f7df1e;
-}
-
-.fa-php:hover {
-    color: #ac5cd9;
-
-}
-
-.fa-github:hover {
+.fa-github:hover,
+.fa-github.hover {
     color: #2dba4e;
 }
 
-.fa-linkedin:hover {
+.fa-linkedin:hover,
+.fa-linkedin.hover {
     color: #0077b5;
+}
+
+.fa-python:hover,
+.fa-python.hover {
+    color: #ffde57;
+}
+
+.devicon-c-plain:hover,
+.devicon-c-plain.hover {
+    color: #03599c;
+}
+
+.devicon-csharp-plain:hover,
+.devicon-csharp-plain.hover {
+    color: #68217a;
+}
+
+.devicon-cplusplus-plain:hover,
+.devicon-cplusplus-plain.hover {
+    color: #004482;
+}
+
+.fa-html5:hover, 
+.fa-html5.hover {
+    color: #e34f26;
+}
+
+.fa-css3-alt:hover,
+.fa-css3-alt.hover {
+    color: #264de4;
+}
+
+.fa-js:hover,
+.fa-js.hover {
+    color: #f7df1e;
+}
+
+.fa-php:hover, 
+.fa-php.hover {
+    color: #ac5cd9;
 }
 
 @keyframes bounce {
