@@ -25,6 +25,7 @@ body {
 }
 
 .container {
+    width: 100%;
     padding: 10px;
 }
 
@@ -49,11 +50,21 @@ body {
         transform: translate(-50%, -50%);
         mix-blend-mode: color-dodge;
     }
+}
 
+@media (orientation: landscape) {
     .layout {
-        width: 50%;
-        padding: 50px;
-        grid-row-gap: 50px;
+        width: 70%;
+        padding: 40px;
+        grid-row-gap: 40px;
+    }
+}
+
+@media (orientation: portrait) {
+    .layout {
+        width: 90%;
+        padding: 25px;
+        grid-row-gap: 25px;
     }
 }
 
@@ -109,12 +120,9 @@ h2 {
     text-align: center;
 }
 
-.logos img {
-    height: 3vh;
-    width: 3vh;
-}
-
 .logos i {
+    will-change: transform, opacity;
+    transform: translateX(0);
     height: 3vh;
     width: 3vh;
 }
