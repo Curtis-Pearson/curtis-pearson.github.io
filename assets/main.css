@@ -27,11 +27,12 @@ body {
 .container {
     width: 100%;
     padding: 10px;
+    display: flex;
+    justify-content: center;
 }
 
 .layout {
-    margin: auto;
-    width: 90%;
+    width: 80%;
     padding: 20px;
     display: grid;
     grid-row-gap: 20px;
@@ -50,21 +51,11 @@ body {
         transform: translate(-50%, -50%);
         mix-blend-mode: color-dodge;
     }
-}
 
-@media (orientation: landscape) {
     .layout {
         width: 70%;
         padding: 40px;
         grid-row-gap: 40px;
-    }
-}
-
-@media (orientation: portrait) {
-    .layout {
-        width: 90%;
-        padding: 25px;
-        grid-row-gap: 25px;
     }
 }
 
@@ -75,7 +66,6 @@ h1 {
 }
 
 h2 {
-    opacity: 0;
     font-family: "Lato-Thin";
     font-size: 2vh;
     text-align: justify;
@@ -83,8 +73,17 @@ h2 {
 }
 
 .about {
+    display: block;
+}
+
+.skills {
     display: grid;
     grid-template-rows: auto auto;
+    grid-template-columns: 1fr;
+}
+
+.projects {
+    opacity: 1;
 }
 
 .header {
@@ -93,14 +92,6 @@ h2 {
     column-gap: 2vh;
     align-items: center;
     width: 100%;
-}
-
-.skills {
-    opacity: 1;
-}
-
-.projects {
-    opacity: 1;
 }
 
 .logos {
