@@ -21,7 +21,7 @@ body {
 }
 
 .glow {
-    opacity: 0;
+    display: none;
 }
 
 .container {
@@ -39,7 +39,7 @@ body {
 
 @media (min-width:768px) {
     .glow {
-        opacity: 1;
+        display: block;
         position: absolute;
         width: 100vh;
         height: 100vh;
