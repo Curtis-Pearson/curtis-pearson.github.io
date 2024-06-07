@@ -38,8 +38,9 @@ body {
 }
 
 .layout {
-    width: 80%;
+    width: 90%;
     margin: 0 auto;
+    padding: 10px;
     display: grid;
     grid-template-columns: 1fr;
 }
