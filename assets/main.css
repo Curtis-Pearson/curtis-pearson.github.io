@@ -9,31 +9,31 @@
 }
 
 @font-face {
+    font-family: "Barlow-BoldItalic";
+    src: url("./fonts/Barlow-BoldItalic.ttf");
+}
+
+@font-face {
     font-family: "Barlow-Thin";
     src: url("./fonts/Barlow-Thin.ttf");
 }
 
 body {
     font-family: "Barlow";
-    background-color: #2E1C2B;
     color: #eaeaea;
     overflow: hidden;
 }
 
-.glow {
-    position: absolute;
-    width: 80vh;
-    height: 80vh;
-    border-radius: 50%;
-    pointer-events: none;
-    background: radial-gradient(circle, #4A1942 0%, transparent 70%);
-    transform: translate(-50%, -50%);
-    mix-blend-mode: color-dodge;
-}
-
 .container {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-    display: flex;
+    height: 100%;
+    background: linear-gradient(-45deg, #2E1C2B, #4A1942);
+    background-blend-mode:multiply;
+    background-size: 100% 100%;
+    display: inline-block;
     justify-content: center;
 }
 
@@ -54,19 +54,19 @@ body {
 
 h1 {
     font-family: "Barlow";
-    font-size: 5vh;
+    font-size: 3em;
     text-shadow: 0px 5px 4px #050404;
     margin-top: auto;
-    margin-bottom: 0.5vh;
+    margin-bottom: 1vh;
 }
 
 h2 {
     font-family: "Barlow-Thin";
-    font-size: 2.5vh;
+    font-size: 1.5em;
     text-align: justify;
     text-justify: inter-word;
     margin-top: 0.5vh;
-    margin-bottom: 2em;
+    margin-bottom: 5vh;
 }
 
 a {
@@ -108,8 +108,8 @@ a {
     will-change: transform, opacity;
     transform: translateX(0) scale(var(--sizeX, 1), var(--sizeY, 1));
     height: 5vh;
-    width: 5vh;
-    font-size: 5vh;
+    width: 3vw;
+    font-size: 3em;
     opacity: 0;
     display: flex;
     justify-content: center;
@@ -212,13 +212,13 @@ a {
         transform: scale(var(--sizeX, 1), var(--sizeY, 1));
     }
     20% {
-        transform: scale(calc(var(--sizeX, 1) + 0.2), calc(var(--sizeY, 1) - 0.2));
+        transform: scale(calc(var(--sizeX, 1) + 0.15), calc(var(--sizeY, 1) - 0.15));
     }
     40% {
         transform: scale(var(--sizeX, 1), var(--sizeY, 1));
     }
     60% {
-        transform: scale(calc(var(--sizeY, 1) - 0.2), calc(var(--sizeX, 1) + 0.2)) translateY(-1.5vh);
+        transform: scale(calc(var(--sizeY, 1) - 0.15), calc(var(--sizeX, 1) + 0.15)) translateY(-1.5vh);
     }
     100% {
         transform: scale(var(--sizeX, 1), var(--sizeY, 1));
@@ -248,4 +248,23 @@ a {
 
 .fade-from-right::before {
     transform: scale(var(--sizeX, 1), var(--sizeY, 1));
+}
+
+.name {
+    font-family: "Barlow-BoldItalic";
+}
+
+.program-language.batch {
+    font-family: "Consolas";
+}
+
+.program-language.python {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.95em;
+    transition: color 0.2s ease-in-out;
+}
+
+.program-language.python:hover,
+.program-language.python.hover {
+    color: #ffde57;
 }

@@ -16,7 +16,8 @@ function initAnimEnd(event) {
 }
 
 async function loadContent() {
-    var delay = 300;
+    const delay = 300;
+
     await new Promise(res => setTimeout(res, delay));
     document.getElementsByClassName('about')[0].style.opacity = 1;
 
@@ -30,20 +31,20 @@ async function loadContent() {
 loadContent();
 
 document.addEventListener('DOMContentLoaded', function() {
-    var aboutLogos = document.querySelector('.about .header .logos').children;
-    var skillsLogos = document.querySelector('.skills .header .logos').children;
-    var delayIncrement = 0.1;
+    const aboutLogos = document.querySelector('.about .header .logos').children;
+    const skillsLogos = document.querySelector('.skills .header .logos').children;
+    const delayIncrement = 0.1;
 
-    for (var i = 0; i < aboutLogos.length; i++) {
-        var child = aboutLogos[i].children[0];
+    for (let i = 0; i < aboutLogos.length; i++) {
+        let child = aboutLogos[i].children[0];
 
         child.style.animationDelay = i * delayIncrement + 0.5 + 's';
         child.classList.add('fade-from-right');
         child.addEventListener('animationend', initAnimEnd);
     }
 
-    for (var i = 0; i < skillsLogos.length; i++) {
-        var child = skillsLogos[i].children[0];
+    for (let i = 0; i < skillsLogos.length; i++) {
+        let child = skillsLogos[i].children[0];
 
         child.style.animationDelay = i * delayIncrement + 1 + 's';
         child.classList.add('fade-from-right');
@@ -61,33 +62,23 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    const glow = document.querySelector('.glow');
-    const mediaQuery = window.matchMedia('(min-width:786px)');
+    const pythonText = document.querySelector('.program-language.python');
+    const pythonIcon = document.querySelector('.fa-python');
+    pythonText.addEventListener('mouseover', function() {
+        pythonIcon.classList.add('hover');
+        pythonIcon.classList.add('bounce');
+    });
+    pythonText.addEventListener('mouseleave', function() {
+        pythonIcon.classList.remove('hover');
+        pythonIcon.classList.remove('bounce');
+    });
+    pythonIcon.addEventListener('mouseover', function() {
+        pythonText.classList.add('hover');
+    });
+    pythonIcon.addEventListener('mouseleave', function() {
+        pythonText.classList.remove('hover');
+    });
 
-    function updateGlowPosition(event) {
-        glow.style.left = `${event.pageX}px`;
-        glow.style.top = `${event.pageY}px`;
-    }
-
-    function centerGlow(event) {
-        const containerRect = document.querySelector('.container').getBoundingClientRect();
-        glow.style.left = `${containerRect.left + containerRect.width / 2}px`;
-        glow.style.top = `${containerRect.top + containerRect.height / 2}px`;
-    }
-
-    function handleMediaChange(event) {
-        if (event.matches) {
-            document.addEventListener('mousemove', updateGlowPosition);
-            window.removeEventListener('resize', centerGlow);
-        } else {
-            document.removeEventListener('mousemove', updateGlowPosition);
-            centerGlow();
-            window.addEventListener('resize', centerGlow);
-        }
-    }
-
-    handleMediaChange(mediaQuery);
-    mediaQuery.addEventListener('change', handleMediaChange);
 });
 
 
