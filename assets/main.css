@@ -54,55 +54,70 @@ body {
 
 h1 {
     font-family: "Barlow";
-    font-size: 4vh;
+    font-size: 5vh;
     text-shadow: 0px 5px 4px #050404;
+    margin-top: auto;
+    margin-bottom: 0.5vh;
 }
 
 h2 {
     font-family: "Barlow-Thin";
-    font-size: 2vh;
+    font-size: 2.5vh;
     text-align: justify;
     text-justify: inter-word;
+    margin-top: 0.5vh;
+    margin-bottom: 2em;
+}
+
+a {
+    text-decoration: none;
 }
 
 .header {
     width: 100%;
-    align-items: center;
+    align-items: baseline;
     display: grid;
     grid-template-columns: 1fr auto;
     column-gap: 2vh;
 }
 
-.about .logos {
-    margin-right: 1vh;
+.about {
+    opacity: 0;
+    transition: opacity 0.5s ease-in;
 }
 
-.skills .header {
-    grid-template-columns: auto 1fr;
+.skills {
+    opacity: 0;
+    transition: opacity 0.5s ease-in;
 }
 
-.skills h1 {
-    text-align: right;
+.projects {
+    opacity: 0;
+    transition: opacity 0.5s ease-in;
 }
 
 .logos {
     display: grid;
     grid-auto-flow: column;
     grid-auto-columns: min-content;
-    gap: 2vh;
+    gap: .5em;
     text-shadow: 0px 5px 4px #050404;
 }
 
 .logos i {
     will-change: transform, opacity;
-    transform: translateX(0);
-    height: 3vh;
-    width: 3vh;
-    font-size: 4vh;
+    transform: translateX(0) scale(var(--sizeX, 1), var(--sizeY, 1));
+    height: 5vh;
+    width: 5vh;
+    font-size: 5vh;
+    opacity: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.fa-linkedin,
 .fa-github,
+.fa-linkedin,
 .fa-envelope,
 .fa-python,
 .devicon-c-plain,
@@ -111,14 +126,35 @@ h2 {
 .fa-html5,
 .fa-css3-alt,
 .fa-js,
-.fa-php
+.devicon-php-plain
  {
     color: white;
-    transition: color .2s ease-in-out;
+    transition: color 0.2s ease-in-out;
 }
 
-.devicon-cplusplus-plain {
-    padding-right: .5vh;
+.logos .fa-github {
+    --sizeX: 0.92;
+    --sizeY: 0.92;
+}
+
+.logos .fa-envelope {
+    --sizeX: 0.92;
+    --sizeY: 0.92;
+}
+
+.logos .devicon-c-plain {
+    --sizeX: 0.92;
+    --sizeY: 0.92;
+}
+
+.logos .devicon-csharp-plain {
+    --sizeX: 0.92;
+    --sizeY: 0.92;
+}
+
+.logos .devicon-cplusplus-plain {
+    --sizeX: 0.88;
+    --sizeY: 0.88;
 }
 
 .fa-github:hover,
@@ -166,34 +202,31 @@ h2 {
     color: #f7df1e;
 }
 
-.fa-php:hover, 
-.fa-php.hover {
+.devicon-php-plain:hover,
+.devicon-php-plain.hover {
     color: #ac5cd9;
 }
 
 @keyframes bounce {
     0% {
-        transform: scale(1.15, 0.85);
+        transform: scale(var(--sizeX, 1), var(--sizeY, 1));
     }
     20% {
-        transform: scale(1, 1);
+        transform: scale(calc(var(--sizeX, 1) + 0.2), calc(var(--sizeY, 1) - 0.2));
     }
     40% {
-        transform: scale(0.85, 1.15) translateY(-1.25vh);
+        transform: scale(var(--sizeX, 1), var(--sizeY, 1));
     }
     60% {
-        transform: scale(1, 1);
-    }
-    80% {
-        transform: scale(1, 1) translateY(-0.5vh);
+        transform: scale(calc(var(--sizeY, 1) - 0.2), calc(var(--sizeX, 1) + 0.2)) translateY(-1.5vh);
     }
     100% {
-        transform: scale(1, 1) translateY(0);
+        transform: scale(var(--sizeX, 1), var(--sizeY, 1));
     }
 }
-  
+
 .bounce {
-    animation: bounce 0.7s ease-in-out;
+    animation: bounce 0.5s ease-in-out;
     will-change: transform;
     backface-visibility: hidden;
 }
@@ -210,36 +243,9 @@ h2 {
 }
 
 .fade-from-right {
-    opacity: 0;
-    animation: fadeFromRight 0.5s forwards;
+    animation: fadeFromRight 0.3s forwards;
 }
 
-@keyframes fadeFromLeft {
-    0% {
-        opacity: 0;
-        transform: translateX(-100%);
-    }
-    100% {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-.fade-from-left {
-    opacity: 0;
-    animation: fadeFromLeft 0.5s forwards;
-}
-
-@keyframes fadeIn {
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
-}
-
-.fade-in {
-    opacity: 0;
-    animation: fadeIn 0.5s ease-in-out forwards;
+.fade-from-right::before {
+    transform: scale(var(--sizeX, 1), var(--sizeY, 1));
 }

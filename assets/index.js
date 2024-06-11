@@ -1,41 +1,53 @@
 function initBounceHandler(event) {
-    event.target.classList.toggle('hover');
-    event.target.classList.toggle("bounce");
+    event.target.classList.remove('hover');
+    event.target.classList.remove("bounce");
     event.target.removeEventListener('animationend', initBounceHandler);
 }
 
-function initAnimEnd(event, animName) {
+function initAnimEnd(event) {
     event.target.removeAttribute('style');
-    event.target.classList.remove(animName);
-    event.target.removeEventListener('animationend', initAnimHandler);
+    event.target.style.opacity = '1';
+    event.target.classList.remove('fade-from-right');
+    event.target.removeEventListener('animationend', initAnimEnd);
     
-    event.target.classList.toggle('hover');
-    event.target.classList.toggle("bounce");
+    event.target.classList.add('hover');
+    event.target.classList.add("bounce");
     event.target.addEventListener('animationend', initBounceHandler);
 }
 
-function initAnimHandler(event) {
-    if (event.animationName == 'fadeFromRight') {
-        initAnimEnd(event, 'fade-from-right');
-    } else {
-        initAnimEnd(event, 'fade-from-left');
-    }
+async function loadContent() {
+    var delay = 300;
+    await new Promise(res => setTimeout(res, delay));
+    document.getElementsByClassName('about')[0].style.opacity = 1;
+
+    await new Promise(res => setTimeout(res, delay));
+    document.getElementsByClassName('skills')[0].style.opacity = 1;
+
+    await new Promise(res => setTimeout(res, delay));
+    document.getElementsByClassName('projects')[0].style.opacity = 1;
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    var rightLogos = document.querySelector('.right').children;
-    var leftLogos = document.querySelector('.left').children;
-    var delayIncrement = 0.3;
+loadContent();
 
-    for (var i = 0; i < rightLogos.length; i++) {
-        var child = rightLogos[i].children[0];
-        child.style.animationDelay = i * delayIncrement + 's';
-        child.addEventListener('animationend', initAnimHandler);
+document.addEventListener('DOMContentLoaded', function() {
+    var aboutLogos = document.querySelector('.about .header .logos').children;
+    var skillsLogos = document.querySelector('.skills .header .logos').children;
+    var delayIncrement = 0.1;
+
+    for (var i = 0; i < aboutLogos.length; i++) {
+        var child = aboutLogos[i].children[0];
+
+        child.style.animationDelay = i * delayIncrement + 0.5 + 's';
+        child.classList.add('fade-from-right');
+        child.addEventListener('animationend', initAnimEnd);
     }
 
-    for (var i = leftLogos.length - 1; i >= 0; i--) {
-        leftLogos[i].style.animationDelay = ((leftLogos.length - i - 1) + rightLogos.length) * delayIncrement + 's'
-        leftLogos[i].addEventListener('animationend', initAnimHandler);
+    for (var i = 0; i < skillsLogos.length; i++) {
+        var child = skillsLogos[i].children[0];
+
+        child.style.animationDelay = i * delayIncrement + 1 + 's';
+        child.classList.add('fade-from-right');
+        child.addEventListener('animationend', initAnimEnd);
     }
     
     const icons = document.querySelectorAll('[class^="devicon"], [class^="fa-"]');
