@@ -128,7 +128,7 @@ a {
 .fa-js,
 .devicon-php-plain
  {
-    color: white;
+    color: #EAEAEA;
     transition: color 0.2s ease-in-out;
 }
 
@@ -254,17 +254,59 @@ a {
     font-family: "Barlow-BoldItalic";
 }
 
-.program-language.batch {
-    font-family: "Consolas";
+.program-language {
+    font-family: "Barlow";
 }
 
 .program-language.python {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.95em;
     transition: color 0.2s ease-in-out;
 }
 
 .program-language.python:hover,
 .program-language.python.hover {
     color: #ffde57;
+}
+
+.repos-wrapper {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: auto 1fr auto;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.repos-arrow {
+    height: 10vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+}
+
+.repos-arrow i {
+    color: #eaeaea;
+}
+
+.repos-arrow:hover {
+    color: #ff0000;
+}
+
+.github-repos {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+}
+
+.github-repos .repo {
+    height: 40vh;
+    border-radius: 25px;
+    border: 4px solid #29001e;
+    background: #050404;
+}
+
+.repo h1 {
+    font-size: 2.5em;
 }
