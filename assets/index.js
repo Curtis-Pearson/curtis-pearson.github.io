@@ -72,16 +72,53 @@ async function displayGithubRepos() {
 
     const repoElem = reposListDiv.querySelector('.repo');
     const repoWidth = repoElem.offsetWidth;
-    const repoMargin = parseFloat(window.getComputedStyle(repoElem).marginRight);
-    const repoBorder = parseFloat(window.getComputedStyle(repoElem).borderRightWidth);
-    const setWidth = (repoWidth * 1.5) + repoMargin + ((repoBorder * 8) / 3);
-    const moveAmount = repoWidth + repoMargin - ((repoBorder * 8) / 3);
+
+    let repoMargin = parseFloat(window.getComputedStyle(repoElem).marginRight);
+    const listWidth = parseFloat(window.getComputedStyle(reposListDiv).width);
+    let floatOffset = (listWidth % 1) / 2;
+
+    if (Math.round(floatOffset * 10) / 10 == 0.2) {
+        floatOffset = -0.3;
+    }
+
+    // FOR WHATEVER REASON, 8.33333 IS THE OFFSET 8.69999
+    // TAKE NOTE: LEFT AND RIGHT DISTANCE SHOULD BE 8.3333... ON EITHER SIDE
+    let moveAmount = (repoWidth + (repoMargin * 2)) - 8.33333 + floatOffset;
+
+    if (Math.round(moveAmount) % 2 != 0) {
+        if (floatOffset != -0.3) {
+            console.log("removed float offset");
+            moveAmount -= (floatOffset * 2);
+        }
+    }
+    else {
+        if (floatOffset == -0.3) {
+            console.log("increased -0.3")
+            floatOffset = 0.5;
+            moveAmount += floatOffset;
+        }
+    }
+
+    console.log(listWidth, floatOffset, repoWidth, repoMargin);
+
+    const reposTrack = document.querySelector('.repos-track');
+    const trackRect = reposTrack.getBoundingClientRect();
+    let prevIndex = 7;
+    let nextIndex = 9;
+    let prevRepo = reposListDiv.children[prevIndex];
+    let nextRepo = reposListDiv.children[nextIndex];
+    let prevRect = prevRepo.getBoundingClientRect();
+    let nextRect = nextRepo.getBoundingClientRect();
+    let prevDist = prevRect.left - trackRect.left;
+    let nextDist = nextRect.left - trackRect.left;
+
+    console.log(prevDist, nextDist, moveAmount);
 
     let offsetIndex = 0 ;
     let isMoving = false;
     let intervalId = null;
 
-    reposListDiv.style.transform = `translateX(${setWidth}px)`;
+    //reposListDiv.style.transform = `translateX(${repoMargin / 2}px)`;
 
     const prevButton = document.querySelector('.repos-arrow.prev');
     const nextButton = document.querySelector('.repos-arrow.next');
@@ -103,6 +140,30 @@ async function displayGithubRepos() {
         resetInterval();
     });
 
+    let leftIndex = 8;
+    let rightIndex = 9;
+    const elements = document.querySelectorAll('.repo');
+    let elementLeft = elements[leftIndex];
+    let elementRight = elements[rightIndex];
+    //const reposTrack = document.querySelector('.repos-track');
+    const wrapperRect = reposTrack.getBoundingClientRect();
+    let elementLeftRect = elementLeft.getBoundingClientRect();
+    let elementRightRect = elementRight.getBoundingClientRect();
+    let distLeft = elementLeftRect.left - wrapperRect.left;
+    let distRight = wrapperRect.right - elementRightRect.right;
+    let diff = distLeft - distRight;
+    let prevLeft = distLeft;
+    let prevRight = distRight;
+
+    console.log(distLeft, distRight, diff);
+    
+    window.addEventListener('resize', () => {
+        repoMargin = parseFloat(window.getComputedStyle(repoElem).marginRight);
+
+        reposListDiv.style.transition = "transform 0s";
+        reposListDiv.style.transform = `translateX(${Math.round(moveAmount * offsetIndex)}px)`;
+    });
+
     function scrollRepos(dir) {
         if (isMoving) {
             return;
@@ -112,9 +173,27 @@ async function displayGithubRepos() {
         isMoving = true;
 
         reposListDiv.style.transition = "transform 0.5s ease-in-out";
-        reposListDiv.style.transform = `translateX(${setWidth + (moveAmount * -offsetIndex)}px)`;
+        reposListDiv.style.transform = `translateX(${(moveAmount * -offsetIndex)}px)`;
 
         reposListDiv.addEventListener('transitionend', () => {
+            
+            leftIndex += dir;
+            rightIndex += dir;
+            elementLeft = elements[leftIndex];
+            elementRight = elements[rightIndex];
+            elementLeftRect = elementLeft.getBoundingClientRect();
+            elementRightRect = elementRight.getBoundingClientRect();
+            distLeft = elementLeftRect.left - wrapperRect.left;
+            distRight = wrapperRect.right - elementRightRect.right;
+            diff = distLeft - distRight;
+            let diffLeft = distLeft - prevLeft;
+            let diffRight = distRight - prevRight;
+            prevLeft = distLeft;
+            prevRight = distRight;
+    
+            console.log(distLeft, distRight, diff, diffLeft, diffRight, (-diffLeft + diffRight));
+            
+            /*
             if (offsetIndex == -repos.length) {
                 reposListDiv.style.transition = "transform 0s";
                 offsetIndex = repos.length;
@@ -125,6 +204,7 @@ async function displayGithubRepos() {
                 offsetIndex = -repos.length + 2;
                 reposListDiv.style.transform = `translateX(${setWidth + (moveAmount * -offsetIndex)}px)`;
             }
+            */
 
             isMoving = false;
         }, { once: true });

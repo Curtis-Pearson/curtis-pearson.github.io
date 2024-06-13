@@ -304,15 +304,16 @@ a {
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
+    box-sizing: border-box;
 }
 
 .repos-list .repo {
-    flex: 0 0 32%;
-    margin-right: 1%;
+    flex: 0 0 calc(50% - 10px);
+    margin: 10px;
     height: 30vh;
-    border-radius: 10px;
     border: 2px solid #893168;
     background: #4A1942;
+    box-sizing: border-box;
 }
 
 .repo-inner {
