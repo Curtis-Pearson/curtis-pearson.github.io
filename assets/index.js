@@ -37,104 +37,83 @@ const repos = [
     }
 ];
 
-async function initBounceHandler(event) {
-    event.target.classList.remove('hover');
-    event.target.classList.remove("bounce");
-    event.target.removeEventListener('animationend', initBounceHandler);
-}
-
-async function initAnimEnd(event) {
-    event.target.removeAttribute('style');
-    event.target.style.opacity = '1';
-    event.target.classList.remove('fade-from-right');
-    event.target.removeEventListener('animationend', initAnimEnd);
-    
-    event.target.classList.add('hover');
-    event.target.classList.add("bounce");
-    event.target.addEventListener('animationend', initBounceHandler);
-}
-
-let displayedRepos = [0, 1, 2];
-
 async function displayGithubRepos() {
-    const reposListDiv = document.querySelector('.github-repos');
+    const reposListDiv = document.querySelector('.repos-list');
     reposListDiv.innerHTML = '';
 
-    for (let i = 0; i < displayedRepos.length; i++) {
-        const repoDiv = document.createElement('div');
-        repoDiv.className = 'repo';
-        
-        const repoName = document.createElement('h1');
-        repoName.textContent = repos[i].name;
-
-        const repoDesc = document.createElement('h2');
-        repoDesc.textContent = repos[i].desc;
-
-        const repoLangs = document.createElement('p');
-        repoLangs.textContent = `Languages: ${repos[i].languages.join(', ')}`;
-
-        const repoLink = document.createElement('a');
-        repoLink.href = repos[i].url;
-        repoLink.textContent = 'View Repo';
-
-        repoDiv.appendChild(repoName);
-        repoDiv.appendChild(repoDesc);
-        repoDiv.appendChild(repoLangs);
-        repoDiv.appendChild(repoLink);
-        reposListDiv.appendChild(repoDiv);
+    for (let i = 0; i < 3; i++) {
+        repos.forEach(repo => {
+            const repoDiv = document.createElement('div');
+            repoDiv.className = 'repo';
+            repoDiv.innerHTML = `
+                <a href="${repo.url}">
+                    <h1>${repo.name}</h1>
+                </a>
+                <h2>${repo.desc}</h2>
+                <p>${repo.languages.join(', ')}</p>
+            `;
+            reposListDiv.appendChild(repoDiv);
+        });
     }
-}
 
-async function updateRepos() {
-    const repoListDiv = document.querySelector('.github-repos');
-    const repoDivs = document.querySelectorAll('.repo');;
+    const repoElem = reposListDiv.querySelector('.repo');
+    const repoWidth = repoElem.offsetWidth;
+    const repoMargin = parseFloat(window.getComputedStyle(repoElem).marginRight) / 1.33333;
+    const setWidth = repoWidth + repoMargin;
 
-    repoDivs[0].style.transition = "opacity 1s, transform 1s";
-    repoDivs[0].style.opacity = 0;
-    repoDivs[0].style.transformOrigin = "left center";
-    repoDivs[0].style.transform = "scaleX(0)";
+    let currentIndex = repos.length;
+    let isMoving = false;
+    let intervalId = null;
 
-    let dist = repoDivs[0].offsetWidth + parseFloat(window.getComputedStyle(repoDivs[0]).marginRight);
+    reposListDiv.style.transform = `translateX(-${setWidth * currentIndex}px)`;
 
-    repoDivs[1].style.transition = "transform 1s";
-    repoDivs[1].style.transform = `translateX(-${dist}px)`;
-    repoDivs[2].style.transition = "transform 1s";
-    repoDivs[2].style.transform = `translateX(-${dist}px)`;
+    const prevButton = document.querySelector('.repos-arrow.prev');
+    const nextButton = document.querySelector('.repos-arrow.next');
 
-    await new Promise(res => setTimeout(res, 1000));
+    prevButton.addEventListener('click', () => { 
+        scrollRepos(-1);
+        resetInterval();
+    });
+    nextButton.addEventListener('click', () => {
+        scrollRepos(1);
+        resetInterval();
+    });
 
-    repoDivs[1].style.transition = "";
-    repoDivs[1].style.transform = "";
-    repoDivs[2].style.transition = "";
-    repoDivs[2].style.transform = "";
-    repoDivs[0].remove();
+    function scrollRepos(dir) {
+        if (isMoving) {
+            return;
+        }
+        
+        currentIndex += dir;
+        isMoving = true;
 
-    let newRepo = repos[displayedRepos[2]];
-    let newRepoDiv = document.createElement('div');
-    newRepoDiv.className = 'repo';
-    newRepoDiv.innerHTML = `
-        <h1>${newRepo.name}</h1>
-        <h2>${newRepo.desc}</h2>
-        <p>${newRepo.languages.join(', ')}</p>
-        <a href="${newRepo.url}">Link</a>
-    `;
-    newRepoDiv.style.opacity = 0;
-    newRepoDiv.style.transformOrigin = "right center";
-    newRepoDiv.style.transform = "scaleX(0)";
+        reposListDiv.style.transition = "transform 0.2s";
+        reposListDiv.style.transform = `translateX(-${currentIndex * setWidth}px)`;
 
-    repoListDiv.appendChild(newRepoDiv);
+        reposListDiv.addEventListener('transitionend', () => {
+            if (currentIndex == 0) {
+                reposListDiv.style.transition = "transform 0s";
+                currentIndex = (repos.length * 2);
+                reposListDiv.style.transform = `translateX(-${currentIndex * setWidth}px)`;
+            }
+            else if (currentIndex == (repos.length * 2) + 2) {
+                reposListDiv.style.transition = "transform 0s";
+                currentIndex = 2;
+                reposListDiv.style.transform = `translateX(-${currentIndex * setWidth}px)`;
+            }
 
-    await new Promise(res => setTimeout(res, 1));
+            isMoving = false;
+        }, { once: true });
+    }
 
-    newRepoDiv.style.transition = "opacity 1s, transform 1s";
-    newRepoDiv.style.opacity = 1;
-    newRepoDiv.style.transform = "scaleX(1)";
-}
+    function resetInterval() {
+        if (intervalId) {
+            clearInterval(intervalId);
+        }
+        intervalId = setInterval(() => scrollRepos(1), 5000);
+    }
 
-async function nextRepo() {
-    let i = displayedRepos.shift();
-    displayedRepos.push((i + 3) % (repos.length - 1));
-    updateRepos();
+    resetInterval();
 }
 
 async function loadContent() {
@@ -153,6 +132,23 @@ async function loadContent() {
 }
 
 loadContent();
+
+async function initBounceHandler(event) {
+    event.target.classList.remove('hover');
+    event.target.classList.remove("bounce");
+    event.target.removeEventListener('animationend', initBounceHandler);
+}
+
+async function initAnimEnd(event) {
+    event.target.removeAttribute('style');
+    event.target.style.opacity = '1';
+    event.target.classList.remove('fade-from-right');
+    event.target.removeEventListener('animationend', initAnimEnd);
+    
+    event.target.classList.add('hover');
+    event.target.classList.add("bounce");
+    event.target.addEventListener('animationend', initBounceHandler);
+}
 
 document.addEventListener('DOMContentLoaded', async function(event) {
     const aboutLogos = document.querySelector('.about .header .logos').children;
@@ -174,16 +170,14 @@ document.addEventListener('DOMContentLoaded', async function(event) {
         child.classList.add('fade-from-right');
         child.addEventListener('animationend', initAnimEnd);
     }
-
-    setInterval(nextRepo, 5000);
     
     const icons = [...aboutLogos, ...skillsLogos];
 
     icons.forEach(icon => {
-        icon.addEventListener('mouseover', event => {
+        icon.children[0].addEventListener('mouseover', event => {
             event.target.classList.toggle("bounce");
         });
-        icon.addEventListener('mouseleave', event => {
+        icon.children[0].addEventListener('mouseleave', event => {
             event.target.classList.toggle("bounce");
         });
     });
