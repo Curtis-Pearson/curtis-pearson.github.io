@@ -1,37 +1,37 @@
 const repos = [
     { 
         'name': "curtis-pearson.github.io",
-        'desc': "",
+        'desc': "Portfolio website.",
         'url': "https://github.com/Curtis-Pearson/curtis-pearson.github.io",
         'languages': ["HTML", "CSS", "JavaScript"]
     },
     {
         'name': "Networked Blackjack",
-        'desc': "",
+        'desc': "Standard Blackjack game with Client/Server Python sockets.",
         'url': "https://github.com/Curtis-Pearson/networked-blackjack",
         'languages': ["Python"]
     },
     {
         'name': "Program Interpreter",
-        'desc': "",
+        'desc': "Basic Python-like program language interpreter with Binary and Unary operations, boolean logic, string handling and global variables.",
         'url': "https://github.com/Curtis-Pearson/program-interpreter",
         'languages': ["Python"]
     },
     {
         'name': "x86 Boot-Loader",
-        'desc': "",
+        'desc': "16-bit x86 boot-loader that can be used to view sections of paged memory.",
         'url': "https://github.com/Curtis-Pearson/x86-boot-loader",
         'languages': ["Assembly"]
     },
     {
         'name': "x86 Graphics",
-        'desc': "",
+        'desc': "16-bit x86 programmable graphics renderer.",
         'url': "https://github.com/Curtis-Pearson/x86-graphics",
         'languages': ["Assembly", "C"]
     },
     {
         'name': "Wizard Shop",
-        'desc': "",
+        'desc': "Interactable multi-window GUI of a wizard-themed shop.",
         'url': "https://github.com/Curtis-Pearson/wizard-shop",
         'languages': ["C#"]
     }
@@ -43,32 +43,49 @@ async function displayGithubRepos() {
 
     for (let i = 0; i < 3; i++) {
         repos.forEach(repo => {
+            let languages = ``;
+
+            repo.languages.forEach(language => {
+                languages += `
+                    <div class="repo-language">
+                        <div class="language ${language.toLowerCase().replace('#', 's')}"></div>
+                        <p>${language}</p>
+                    </div>
+                `;
+            });
+
             const repoDiv = document.createElement('div');
             repoDiv.className = 'repo';
             repoDiv.innerHTML = `
-                <a href="${repo.url}">
-                    <h1>${repo.name}</h1>
-                </a>
-                <h2>${repo.desc}</h2>
-                <p>${repo.languages.join(', ')}</p>
+                <div class="repo-inner">
+                    <a href="${repo.url}">
+                        <h1>${repo.name}</h1>
+                    </a>
+                    <h2>${repo.desc}</h2>
+                    <div class="repo-languages">${languages}</div>
+                </div>
             `;
+
             reposListDiv.appendChild(repoDiv);
         });
     }
 
     const repoElem = reposListDiv.querySelector('.repo');
     const repoWidth = repoElem.offsetWidth;
-    const repoMargin = parseFloat(window.getComputedStyle(repoElem).marginRight) / 1.33333;
-    const setWidth = repoWidth + repoMargin;
+    const repoMargin = parseFloat(window.getComputedStyle(repoElem).marginRight);
+    const repoBorder = parseFloat(window.getComputedStyle(repoElem).borderRightWidth);
+    const setWidth = (repoWidth * 1.5) + repoMargin + ((repoBorder * 8) / 3);
+    const moveAmount = repoWidth + repoMargin - ((repoBorder * 8) / 3);
 
-    let currentIndex = repos.length;
+    let offsetIndex = 0 ;
     let isMoving = false;
     let intervalId = null;
 
-    reposListDiv.style.transform = `translateX(-${setWidth * currentIndex}px)`;
+    reposListDiv.style.transform = `translateX(${setWidth}px)`;
 
     const prevButton = document.querySelector('.repos-arrow.prev');
     const nextButton = document.querySelector('.repos-arrow.next');
+    const reposWrapper = document.querySelector('.repos-wrapper');
 
     prevButton.addEventListener('click', () => { 
         scrollRepos(-1);
@@ -79,27 +96,34 @@ async function displayGithubRepos() {
         resetInterval();
     });
 
+    reposWrapper.addEventListener('mouseenter', () => {
+        clearInterval(intervalId);
+    });
+    reposWrapper.addEventListener('mouseleave', () => {
+        resetInterval();
+    });
+
     function scrollRepos(dir) {
         if (isMoving) {
             return;
         }
         
-        currentIndex += dir;
+        offsetIndex += dir;
         isMoving = true;
 
-        reposListDiv.style.transition = "transform 0.2s";
-        reposListDiv.style.transform = `translateX(-${currentIndex * setWidth}px)`;
+        reposListDiv.style.transition = "transform 0.5s ease-in-out";
+        reposListDiv.style.transform = `translateX(${setWidth + (moveAmount * -offsetIndex)}px)`;
 
         reposListDiv.addEventListener('transitionend', () => {
-            if (currentIndex == 0) {
+            if (offsetIndex == -repos.length) {
                 reposListDiv.style.transition = "transform 0s";
-                currentIndex = (repos.length * 2);
-                reposListDiv.style.transform = `translateX(-${currentIndex * setWidth}px)`;
+                offsetIndex = repos.length;
+                reposListDiv.style.transform = `translateX(${setWidth + (moveAmount * -offsetIndex)}px)`;
             }
-            else if (currentIndex == (repos.length * 2) + 2) {
+            else if (offsetIndex == repos.length + 2) {
                 reposListDiv.style.transition = "transform 0s";
-                currentIndex = 2;
-                reposListDiv.style.transform = `translateX(-${currentIndex * setWidth}px)`;
+                offsetIndex = -repos.length + 2;
+                reposListDiv.style.transform = `translateX(${setWidth + (moveAmount * -offsetIndex)}px)`;
             }
 
             isMoving = false;
@@ -110,7 +134,7 @@ async function displayGithubRepos() {
         if (intervalId) {
             clearInterval(intervalId);
         }
-        intervalId = setInterval(() => scrollRepos(1), 5000);
+        //intervalId = setInterval(() => scrollRepos(1), 5000);
     }
 
     resetInterval();
