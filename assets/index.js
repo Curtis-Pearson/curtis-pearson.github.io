@@ -76,9 +76,10 @@ async function displayGithubRepos() {
     let repoMargin = parseFloat(window.getComputedStyle(repoElem).marginRight);
     let arrowWidth = parseFloat(window.getComputedStyle(repoArrow).fontSize);
     let listWidth = parseFloat(window.getComputedStyle(reposListDiv).width);
+    let originOffset = 0;
     let moveAmount = (listWidth - arrowWidth) / 2 + repoMargin - (1.6666 * (arrowWidth / 13.3333));
-
-    /*
+    
+    /* DEV TESTING */
     const reposTrack = document.querySelector('.repos-track');
     const trackRect = reposTrack.getBoundingClientRect();
     let prevIndex = 7;
@@ -91,13 +92,29 @@ async function displayGithubRepos() {
     let nextDist = nextRect.left - trackRect.left;
 
     console.log(prevDist, nextDist, moveAmount);
-    */
+    /* DEV TESTING */
 
     let offsetIndex = 0;
     let leftIndex = ((repos.length * 3) / 2) - 1;
     let rightIndex = leftIndex + 1;
     let isMoving = false;
     let intervalId = null;
+
+    if (window.innerWidth < 1225) {
+        
+        
+        const reposTrack = document.querySelector('.repos-track');
+        const trackRect = reposTrack.getBoundingClientRect();
+        const rect = repoElems[leftIndex].getBoundingClientRect();
+        originOffset = rect.left - trackRect.left + (repoMargin) + 0.6666;
+
+        console.log(originOffset);
+
+        moveAmount = (listWidth - arrowWidth) + repoMargin - (1.6666 * (arrowWidth / 13.3333)) - 3.3333;
+
+        reposListDiv.style.transition = "transform 0s";
+        reposListDiv.style.transform = `translateX(${-originOffset}px)`;
+    }
 
     function wrapScroll() {
         repoElems[leftIndex].style.transition = "opacity 0s";
@@ -132,9 +149,9 @@ async function displayGithubRepos() {
         resetInterval();
     });
 
-    /*
+    /* DEV TESTING */
     let li = 8;
-    let ri = 9;
+    let ri = 8;
     const elements = document.querySelectorAll('.repo');
     let elementLeft = elements[li];
     let elementRight = elements[ri];
@@ -148,7 +165,7 @@ async function displayGithubRepos() {
     let prevRight = distRight;
 
     console.log(distLeft, distRight, diff);
-    */
+    /* DEV TESTING */
     
     window.addEventListener('resize', () => {
         repoMargin = parseFloat(window.getComputedStyle(repoElem).marginRight);
@@ -171,11 +188,11 @@ async function displayGithubRepos() {
         isMoving = true;
 
         reposListDiv.style.transition = `transform ${transitionStyle}`;
-        reposListDiv.style.transform = `translateX(${(moveAmount * -offsetIndex)}px)`;
+        reposListDiv.style.transform = `translateX(${(moveAmount * -offsetIndex) - originOffset}px)`;
 
         if (dir == 1) {
             repoElems[leftIndex].style.transition = `opacity ${transitionStyle}`;
-            repoElems[leftIndex].style.opacity = 0;
+            //repoElems[leftIndex].style.opacity = 0;
 
             leftIndex++;
             rightIndex++;
@@ -185,7 +202,7 @@ async function displayGithubRepos() {
         }
         else if (dir == -1) {
             repoElems[rightIndex].style.transition = `opacity ${transitionStyle}`;
-            repoElems[rightIndex].style.opacity = 0;
+            //repoElems[rightIndex].style.opacity = 0;
 
             leftIndex--;
             rightIndex--;
@@ -195,7 +212,7 @@ async function displayGithubRepos() {
         }
 
         reposListDiv.addEventListener('transitionend', () => {
-            /*
+            /* DEV TESTING */
             li += dir;
             ri += dir;
             elementLeft = elements[li];
@@ -211,7 +228,7 @@ async function displayGithubRepos() {
             prevRight = distRight;
     
             console.log(distLeft, distRight, diff, diffLeft, diffRight, (-diffLeft + diffRight));
-            */
+            /* DEV TESTING */
 
             if (offsetIndex == -repos.length - 2) {
                 offsetIndex = repos.length - 2;
@@ -272,7 +289,6 @@ async function initAnimEnd(event) {
 
 document.addEventListener('DOMContentLoaded', async function(event) {
     console.log(window.innerHeight, window.innerWidth);
-    console.log(window);
 
     const aboutLogos = document.querySelector('.about .header .logos').children;
     const skillsLogos = document.querySelector('.skills .header .logos').children;
