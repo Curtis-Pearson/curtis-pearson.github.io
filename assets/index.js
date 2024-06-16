@@ -34,7 +34,7 @@ const repos = [
         'desc': "Interactable multi-window GUI of a wizard-themed shop.",
         'url': "https://github.com/Curtis-Pearson/wizard-shop",
         'languages': ["C#"]
-    }
+    },
 ];
 
 async function displayGithubRepos() {
@@ -70,37 +70,15 @@ async function displayGithubRepos() {
         });
     }
 
-    const repoElem = reposListDiv.querySelector('.repo');
-    const repoWidth = repoElem.offsetWidth;
-
+    const repoElems = reposListDiv.querySelectorAll('.repo');
+    const repoElem = repoElems[0];
+    const repoArrow = document.querySelector('.repos-arrow i');
     let repoMargin = parseFloat(window.getComputedStyle(repoElem).marginRight);
-    const listWidth = parseFloat(window.getComputedStyle(reposListDiv).width);
-    let floatOffset = (listWidth % 1) / 2;
+    let arrowWidth = parseFloat(window.getComputedStyle(repoArrow).fontSize);
+    let listWidth = parseFloat(window.getComputedStyle(reposListDiv).width);
+    let moveAmount = (listWidth - arrowWidth) / 2 + repoMargin - (1.6666 * (arrowWidth / 13.3333));
 
-    if (Math.round(floatOffset * 10) / 10 == 0.2) {
-        floatOffset = -0.3;
-    }
-
-    // FOR WHATEVER REASON, 8.33333 IS THE OFFSET 8.69999
-    // TAKE NOTE: LEFT AND RIGHT DISTANCE SHOULD BE 8.3333... ON EITHER SIDE
-    let moveAmount = (repoWidth + (repoMargin * 2)) - 8.33333 + floatOffset;
-
-    if (Math.round(moveAmount) % 2 != 0) {
-        if (floatOffset != -0.3) {
-            console.log("removed float offset");
-            moveAmount -= (floatOffset * 2);
-        }
-    }
-    else {
-        if (floatOffset == -0.3) {
-            console.log("increased -0.3")
-            floatOffset = 0.5;
-            moveAmount += floatOffset;
-        }
-    }
-
-    console.log(listWidth, floatOffset, repoWidth, repoMargin);
-
+    /*
     const reposTrack = document.querySelector('.repos-track');
     const trackRect = reposTrack.getBoundingClientRect();
     let prevIndex = 7;
@@ -113,12 +91,26 @@ async function displayGithubRepos() {
     let nextDist = nextRect.left - trackRect.left;
 
     console.log(prevDist, nextDist, moveAmount);
+    */
 
-    let offsetIndex = 0 ;
+    let offsetIndex = 0;
+    let leftIndex = ((repos.length * 3) / 2) - 1;
+    let rightIndex = leftIndex + 1;
     let isMoving = false;
     let intervalId = null;
 
-    //reposListDiv.style.transform = `translateX(${repoMargin / 2}px)`;
+    function wrapScroll() {
+        repoElems[leftIndex].style.transition = "opacity 0s";
+        repoElems[rightIndex].style.transition = "opacity 0s";
+        repoElems[leftIndex].style.opacity = 1;
+        repoElems[rightIndex].style.opacity = 1;
+
+        reposListDiv.style.transition = "transform 0s";
+        reposListDiv.style.transform = `translateX(${(moveAmount * -offsetIndex)}px)`;
+    }
+
+    repoElems[leftIndex].style.opacity = 1;
+    repoElems[rightIndex].style.opacity = 1;
 
     const prevButton = document.querySelector('.repos-arrow.prev');
     const nextButton = document.querySelector('.repos-arrow.next');
@@ -140,12 +132,12 @@ async function displayGithubRepos() {
         resetInterval();
     });
 
-    let leftIndex = 8;
-    let rightIndex = 9;
+    /*
+    let li = 8;
+    let ri = 9;
     const elements = document.querySelectorAll('.repo');
-    let elementLeft = elements[leftIndex];
-    let elementRight = elements[rightIndex];
-    //const reposTrack = document.querySelector('.repos-track');
+    let elementLeft = elements[li];
+    let elementRight = elements[ri];
     const wrapperRect = reposTrack.getBoundingClientRect();
     let elementLeftRect = elementLeft.getBoundingClientRect();
     let elementRightRect = elementRight.getBoundingClientRect();
@@ -156,13 +148,19 @@ async function displayGithubRepos() {
     let prevRight = distRight;
 
     console.log(distLeft, distRight, diff);
+    */
     
     window.addEventListener('resize', () => {
         repoMargin = parseFloat(window.getComputedStyle(repoElem).marginRight);
+        arrowWidth = parseFloat(window.getComputedStyle(repoArrow).fontSize);
+        listWidth = parseFloat(window.getComputedStyle(reposListDiv).width);
+        moveAmount = (listWidth - arrowWidth) / 2 + repoMargin - (1.6666 * (arrowWidth / 13.3333)) + 25;
 
         reposListDiv.style.transition = "transform 0s";
-        reposListDiv.style.transform = `translateX(${Math.round(moveAmount * offsetIndex)}px)`;
+        reposListDiv.style.transform = `translateX(${(moveAmount * -offsetIndex)}px)`;
     });
+
+    const transitionStyle = "0.5s ease-in-out";
 
     function scrollRepos(dir) {
         if (isMoving) {
@@ -172,15 +170,36 @@ async function displayGithubRepos() {
         offsetIndex += dir;
         isMoving = true;
 
-        reposListDiv.style.transition = "transform 0.5s ease-in-out";
+        reposListDiv.style.transition = `transform ${transitionStyle}`;
         reposListDiv.style.transform = `translateX(${(moveAmount * -offsetIndex)}px)`;
 
+        if (dir == 1) {
+            repoElems[leftIndex].style.transition = `opacity ${transitionStyle}`;
+            repoElems[leftIndex].style.opacity = 0;
+
+            leftIndex++;
+            rightIndex++;
+
+            repoElems[rightIndex].style.transition = `opacity ${transitionStyle}`;
+            repoElems[rightIndex].style.opacity = 1;
+        }
+        else if (dir == -1) {
+            repoElems[rightIndex].style.transition = `opacity ${transitionStyle}`;
+            repoElems[rightIndex].style.opacity = 0;
+
+            leftIndex--;
+            rightIndex--;
+
+            repoElems[leftIndex].style.transition = `opacity ${transitionStyle}`;
+            repoElems[leftIndex].style.opacity = 1;
+        }
+
         reposListDiv.addEventListener('transitionend', () => {
-            
-            leftIndex += dir;
-            rightIndex += dir;
-            elementLeft = elements[leftIndex];
-            elementRight = elements[rightIndex];
+            /*
+            li += dir;
+            ri += dir;
+            elementLeft = elements[li];
+            elementRight = elements[ri];
             elementLeftRect = elementLeft.getBoundingClientRect();
             elementRightRect = elementRight.getBoundingClientRect();
             distLeft = elementLeftRect.left - wrapperRect.left;
@@ -192,19 +211,20 @@ async function displayGithubRepos() {
             prevRight = distRight;
     
             console.log(distLeft, distRight, diff, diffLeft, diffRight, (-diffLeft + diffRight));
-            
-            /*
-            if (offsetIndex == -repos.length) {
-                reposListDiv.style.transition = "transform 0s";
-                offsetIndex = repos.length;
-                reposListDiv.style.transform = `translateX(${setWidth + (moveAmount * -offsetIndex)}px)`;
+            */
+
+            if (offsetIndex == -repos.length - 2) {
+                offsetIndex = repos.length - 2;
+                leftIndex = repos.length * 2;
+                rightIndex = leftIndex + 1;
+                wrapScroll();
             }
             else if (offsetIndex == repos.length + 2) {
-                reposListDiv.style.transition = "transform 0s";
-                offsetIndex = -repos.length + 2;
-                reposListDiv.style.transform = `translateX(${setWidth + (moveAmount * -offsetIndex)}px)`;
+                offsetIndex = -repos.length + 2
+                leftIndex = repos.length - 2;
+                rightIndex = leftIndex + 1;
+                wrapScroll();
             }
-            */
 
             isMoving = false;
         }, { once: true });
@@ -237,24 +257,23 @@ async function loadContent() {
 
 loadContent();
 
-async function initBounceHandler(event) {
-    event.target.classList.remove('hover');
-    event.target.classList.remove("bounce");
-    event.target.removeEventListener('animationend', initBounceHandler);
-}
-
 async function initAnimEnd(event) {
     event.target.removeAttribute('style');
     event.target.style.opacity = '1';
     event.target.classList.remove('fade-from-right');
-    event.target.removeEventListener('animationend', initAnimEnd);
-    
     event.target.classList.add('hover');
     event.target.classList.add("bounce");
-    event.target.addEventListener('animationend', initBounceHandler);
+
+    event.target.addEventListener('animationend', () => {
+        event.target.classList.remove('hover');
+        event.target.classList.remove("bounce");
+    }, { once: true });
 }
 
 document.addEventListener('DOMContentLoaded', async function(event) {
+    console.log(window.innerHeight, window.innerWidth);
+    console.log(window);
+
     const aboutLogos = document.querySelector('.about .header .logos').children;
     const skillsLogos = document.querySelector('.skills .header .logos').children;
     const delayIncrement = 0.1;
@@ -264,7 +283,7 @@ document.addEventListener('DOMContentLoaded', async function(event) {
 
         child.style.animationDelay = i * delayIncrement + 0.5 + 's';
         child.classList.add('fade-from-right');
-        child.addEventListener('animationend', initAnimEnd);
+        child.addEventListener('animationend', initAnimEnd, { once: true });
     }
 
     for (let i = 0; i < skillsLogos.length; i++) {
@@ -272,7 +291,7 @@ document.addEventListener('DOMContentLoaded', async function(event) {
 
         child.style.animationDelay = i * delayIncrement + 1 + 's';
         child.classList.add('fade-from-right');
-        child.addEventListener('animationend', initAnimEnd);
+        child.addEventListener('animationend', initAnimEnd, { once: true });
     }
     
     const icons = [...aboutLogos, ...skillsLogos];
@@ -286,21 +305,42 @@ document.addEventListener('DOMContentLoaded', async function(event) {
         });
     });
 
-    const pythonText = document.querySelector('.program-language.python');
-    const pythonIcon = document.querySelector('.fa-python');
-    pythonText.addEventListener('mouseover', function() {
-        pythonIcon.classList.add('hover');
-        pythonIcon.classList.add('bounce');
-    });
-    pythonText.addEventListener('mouseleave', function() {
-        pythonIcon.classList.remove('hover');
-        pythonIcon.classList.remove('bounce');
-    });
-    pythonIcon.addEventListener('mouseover', function() {
-        pythonText.classList.add('hover');
-    });
-    pythonIcon.addEventListener('mouseleave', function() {
-        pythonText.classList.remove('hover');
-    });
+    const programLanguages = document.querySelectorAll('.program-language');
+
+    for (let i = 0; i < programLanguages.length; i++) {
+        let lang = programLanguages[i];
+
+        if (lang.classList[1] == "batch") {
+            continue;
+        }
+
+        let langIcon = skillsLogos[i-1].children[0];
+
+        lang.addEventListener('mouseover', () => {
+            langIcon.classList.add('hover');
+            langIcon.classList.add('bounce');
+        });
+        lang.addEventListener('mouseleave', () => {
+            langIcon.classList.remove('hover');
+            langIcon.classList.remove('bounce');
+        });
+        langIcon.addEventListener('mouseover', () => {
+            lang.classList.add('hover');
+        });
+        langIcon.addEventListener('mouseleave', () => {
+            lang.classList.remove('hover');
+        });
+    }
+
+    const repoArrows = document.querySelectorAll('.repos-arrow');
+
+    repoArrows.forEach(arrow => {
+        arrow.addEventListener('mouseenter', () => {
+            arrow.children[0].classList.add('hover');
+        });
+        arrow.addEventListener('mouseleave', () => {
+            arrow.children[0].classList.remove('hover');
+        });
+    })
 
 });

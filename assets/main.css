@@ -38,23 +38,18 @@ body {
 }
 
 .layout {
+    height: 90%;
     width: 90%;
-    margin: 0 auto;
+    margin: auto auto;
     padding: 10px;
     display: grid;
     grid-template-columns: 1fr;
-}
-
-@media (min-width:768px) {
-    .layout {
-        width: 70%;
-        padding: 40px;
-    }
+    grid-template-rows: auto auto auto;
 }
 
 h1 {
     font-family: "Barlow";
-    font-size: 3em;
+    font-size: 5vh;
     text-shadow: 0px 5px 4px #050404;
     margin-top: auto;
     margin-bottom: 1vh;
@@ -62,7 +57,7 @@ h1 {
 
 h2 {
     font-family: "Barlow-Thin";
-    font-size: 1.5em;
+    font-size: 2.5vh;
     text-align: justify;
     text-justify: inter-word;
     margin-top: 0.5vh;
@@ -71,6 +66,7 @@ h2 {
 
 p {
     font-family: "Barlow-Thin";
+    font-size: 1.5vh;
 }
 
 a {
@@ -104,7 +100,7 @@ a {
     display: grid;
     grid-auto-flow: column;
     grid-auto-columns: min-content;
-    gap: .5em;
+    gap: 1vh;
     text-shadow: 0px 5px 4px #050404;
 }
 
@@ -113,11 +109,40 @@ a {
     transform: translateX(0) scale(var(--sizeX, 1), var(--sizeY, 1));
     height: 5vh;
     width: 3vw;
-    font-size: 3em;
+    font-size: 5vh;
     opacity: 0;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+@media only screen and (min-width:320px) and (max-width:480px) {
+    .layout {
+        width: 70%;
+        padding: 40px;
+    }
+
+    h1 {
+        font-size: 3vh;
+    }
+
+    h2 {
+        font-size: 1.5vh;
+    }
+
+    p {
+        font-size: 1vh;
+    }
+
+    .logos {
+        gap: 1vh;
+    }
+
+    .logos i {
+        height: 3vh;
+        width: 1.8vh;
+        font-size: 3vh;
+    }
 }
 
 .fa-github,
@@ -262,13 +287,31 @@ a {
     font-family: "Barlow";
 }
 
-.program-language.python {
+.program-language.python,
+.program-language.c,
+.program-language.cs,
+.program-language.cpp {
     transition: color 0.2s ease-in-out;
 }
 
 .program-language.python:hover,
 .program-language.python.hover {
     color: #ffde57;
+}
+
+.program-language.c:hover,
+.program-language.c.hover {
+    color: #03599c;
+}
+
+.program-language.cs:hover,
+.program-language.cs.hover {
+    color: #68217a;
+}
+
+.program-language.cpp:hover,
+.program-language.cpp.hover {
+    color: #004482;
 }
 
 .repos-wrapper {
@@ -288,9 +331,21 @@ a {
     justify-content: center;
     background: none;
     border: none;
+    box-sizing: border-box;
 }
 
 .repos-arrow i {
+    color: #888888;
+    font-size: 3em;
+    transition: color 0.2s ease-in-out;
+}
+
+.repos-arrow:hover {
+    cursor: pointer;
+}
+
+.repos-arrow i.hover,
+.repos-arrow i:hover {
     color: #eaeaea;
 }
 
@@ -314,6 +369,7 @@ a {
     border: 2px solid #893168;
     background: #4A1942;
     box-sizing: border-box;
+    opacity: 0;
 }
 
 .repo-inner {
@@ -333,14 +389,14 @@ a {
 }
 
 .repo-inner h1 {
-    font-size: 2em;
+    font-size: 3vh;
     color: #eaeaea;
     text-decoration: none;
     text-shadow: none;
 }
 
 .repo-inner h2 {
-    font-size: 1em;
+    font-size: 2vh;
     height: calc(100% - 15px);
     overflow: hidden;
     text-overflow: ellipsis;
@@ -358,7 +414,7 @@ a {
 }
 
 .repo-language p {
-    font-size: 1em;
+    font-size: 1.5vh;
     margin: 0;
     padding-left: 5px;
     padding-right: 5px;
@@ -366,8 +422,8 @@ a {
 
 .language {
     border-radius: 50%;
-    height: .7em;
-    width: .7em;
+    height: 1vh;
+    width: 1vh;
     display: inline-block;
     align-self: center;
 }
