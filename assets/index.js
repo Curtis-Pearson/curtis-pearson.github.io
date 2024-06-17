@@ -37,6 +37,38 @@ const repos = [
     },
 ];
 
+function getViewport() {
+    const phoneMaxWidth = 480;
+    const phoneMaxHeight = 926;
+    const tabletMaxWidth = 1080;
+    const tabletMaxHeight = 1366;
+
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const orientation = (window.innerWidth > window.innerHeight) ? 'landscape' : 'portrait';
+
+    let screenType;
+
+    if (width <= phoneMaxWidth && height <= phoneMaxHeight || width <= phoneMaxHeight && height <= phoneMaxWidth) {
+        screenType = 'phone';
+    } 
+    else if (width <= tabletMaxWidth && height <= tabletMaxHeight || width <= tabletMaxHeight && height <= tabletMaxWidth) {
+        screenType = 'tablet';
+    } 
+    else {
+        screenType = 'computer';
+    }
+
+    /*
+    console.log(width, height, screenType, orientation);
+    */
+
+    return {
+        screenType: screenType,
+        orientation: orientation
+    };
+}
+
 async function displayGithubRepos() {
     const reposListDiv = document.querySelector('.repos-list');
     reposListDiv.innerHTML = '';
@@ -73,13 +105,14 @@ async function displayGithubRepos() {
     const repoElems = reposListDiv.querySelectorAll('.repo');
     const repoElem = repoElems[0];
     const repoArrow = document.querySelector('.repos-arrow i');
-    let repoMargin = parseFloat(window.getComputedStyle(repoElem).marginRight);
+    const repoMargin = parseFloat(window.getComputedStyle(repoElem).marginRight);
     let arrowWidth = parseFloat(window.getComputedStyle(repoArrow).fontSize);
     let listWidth = parseFloat(window.getComputedStyle(reposListDiv).width);
     let originOffset = 0;
     let moveAmount = (listWidth - arrowWidth) / 2 + repoMargin - (1.6666 * (arrowWidth / 13.3333));
     
     /* DEV TESTING */
+    /*
     const reposTrack = document.querySelector('.repos-track');
     const trackRect = reposTrack.getBoundingClientRect();
     let prevIndex = 7;
@@ -92,6 +125,7 @@ async function displayGithubRepos() {
     let nextDist = nextRect.left - trackRect.left;
 
     console.log(prevDist, nextDist, moveAmount);
+    */
     /* DEV TESTING */
 
     let offsetIndex = 0;
@@ -100,20 +134,42 @@ async function displayGithubRepos() {
     let isMoving = false;
     let intervalId = null;
 
-    if (window.innerWidth < 1225) {
-        
-        
+    let viewport = getViewport();
+
+    function getOriginOffset() {
         const reposTrack = document.querySelector('.repos-track');
         const trackRect = reposTrack.getBoundingClientRect();
         const rect = repoElems[leftIndex].getBoundingClientRect();
-        originOffset = rect.left - trackRect.left + (repoMargin) + 0.6666;
+        originOffset = rect.left - trackRect.left + repoMargin + 1.6666;
+        // console.log(originOffset, "origin offset");
+        return originOffset;
+    }
 
-        console.log(originOffset);
-
+    function setPhone() {
+        rightIndex = leftIndex;
+        originOffset = getOriginOffset();
         moveAmount = (listWidth - arrowWidth) + repoMargin - (1.6666 * (arrowWidth / 13.3333)) - 3.3333;
 
         reposListDiv.style.transition = "transform 0s";
         reposListDiv.style.transform = `translateX(${-originOffset}px)`;
+    }
+
+    switch (viewport.screenType) {
+        case 'phone':
+            setPhone();
+            break;
+
+        case 'tablet':
+            if (viewport.orientation == 'portrait') {
+                setPhone();
+            }
+            break;
+
+        case 'computer':
+            break;
+
+        default: 
+            break;
     }
 
     function wrapScroll() {
@@ -123,7 +179,7 @@ async function displayGithubRepos() {
         repoElems[rightIndex].style.opacity = 1;
 
         reposListDiv.style.transition = "transform 0s";
-        reposListDiv.style.transform = `translateX(${(moveAmount * -offsetIndex)}px)`;
+        reposListDiv.style.transform = `translateX(${(moveAmount * -offsetIndex) - originOffset}px)`;
     }
 
     repoElems[leftIndex].style.opacity = 1;
@@ -150,6 +206,7 @@ async function displayGithubRepos() {
     });
 
     /* DEV TESTING */
+    /*
     let li = 8;
     let ri = 8;
     const elements = document.querySelectorAll('.repo');
@@ -165,16 +222,75 @@ async function displayGithubRepos() {
     let prevRight = distRight;
 
     console.log(distLeft, distRight, diff);
+
+    console.log("move amount:", moveAmount);
+    */
     /* DEV TESTING */
-    
+
     window.addEventListener('resize', () => {
-        repoMargin = parseFloat(window.getComputedStyle(repoElem).marginRight);
+        resetInterval();
+
         arrowWidth = parseFloat(window.getComputedStyle(repoArrow).fontSize);
         listWidth = parseFloat(window.getComputedStyle(reposListDiv).width);
-        moveAmount = (listWidth - arrowWidth) / 2 + repoMargin - (1.6666 * (arrowWidth / 13.3333)) + 25;
+        viewport = getViewport();
 
-        reposListDiv.style.transition = "transform 0s";
-        reposListDiv.style.transform = `translateX(${(moveAmount * -offsetIndex)}px)`;
+        //console.log(repoMargin, "repo margin");
+
+        switch (viewport.screenType) {
+            case "phone":
+                if (viewport.orientation == "portrait") {
+                    moveAmount = (listWidth - arrowWidth) + repoMargin - (1.6666 * (arrowWidth / 13.3333)) + 30;
+                }
+                else {
+                    moveAmount = (listWidth - arrowWidth) + repoMargin - (1.6666 * (arrowWidth / 13.3333)) + 30;
+                }
+
+                repoElems[rightIndex].style.transition = "opacity 0s";
+                repoElems[rightIndex].style.opacity = 0;
+
+                originOffset = -moveAmount / 2;
+                rightIndex = leftIndex;
+                break;
+    
+            case "tablet":
+                if (viewport.orientation == "portrait") {
+                    moveAmount = (listWidth - arrowWidth) + repoMargin - (1.6666 * (arrowWidth / 13.3333)) + 30;
+                    originOffset = -moveAmount / 2;
+                    rightIndex = leftIndex;
+
+                    repoElems[rightIndex].style.transition = "opacity 0s";
+                    repoElems[rightIndex].style.opacity = 0;
+                }
+                else {
+                    moveAmount = (listWidth - arrowWidth) / 2 + repoMargin - (1.6666 * (arrowWidth / 13.3333)) + 25;
+                    originOffset = 0;
+                    rightIndex = leftIndex + 1;
+
+                    repoElems[rightIndex].style.transition = "opacity 0s";
+                    repoElems[rightIndex].style.opacity = 1;
+                }
+                break;
+    
+            case "computer":
+                moveAmount = (listWidth - arrowWidth) / 2 + repoMargin - (1.6666 * (arrowWidth / 13.3333)) + 25;
+                originOffset = 0;
+                rightIndex = leftIndex + 1;
+
+                repoElems[rightIndex].style.transition = "opacity 0s";
+                repoElems[rightIndex].style.opacity = 1;
+                break;
+    
+            default: 
+                break;
+        }
+
+        /*
+        console.log("screen resize, move amount:", moveAmount);
+        console.log("indexes: ", leftIndex, rightIndex);
+        console.log((moveAmount * -offsetIndex) - originOffset);
+        */
+
+        wrapScroll();
     });
 
     const transitionStyle = "0.5s ease-in-out";
@@ -192,7 +308,7 @@ async function displayGithubRepos() {
 
         if (dir == 1) {
             repoElems[leftIndex].style.transition = `opacity ${transitionStyle}`;
-            //repoElems[leftIndex].style.opacity = 0;
+            repoElems[leftIndex].style.opacity = 0;
 
             leftIndex++;
             rightIndex++;
@@ -202,7 +318,7 @@ async function displayGithubRepos() {
         }
         else if (dir == -1) {
             repoElems[rightIndex].style.transition = `opacity ${transitionStyle}`;
-            //repoElems[rightIndex].style.opacity = 0;
+            repoElems[rightIndex].style.opacity = 0;
 
             leftIndex--;
             rightIndex--;
@@ -213,6 +329,7 @@ async function displayGithubRepos() {
 
         reposListDiv.addEventListener('transitionend', () => {
             /* DEV TESTING */
+            /*
             li += dir;
             ri += dir;
             elementLeft = elements[li];
@@ -228,18 +345,69 @@ async function displayGithubRepos() {
             prevRight = distRight;
     
             console.log(distLeft, distRight, diff, diffLeft, diffRight, (-diffLeft + diffRight));
+
+            console.log(offsetIndex, leftIndex, rightIndex);
+            */
             /* DEV TESTING */
 
             if (offsetIndex == -repos.length - 2) {
                 offsetIndex = repos.length - 2;
                 leftIndex = repos.length * 2;
-                rightIndex = leftIndex + 1;
+
+                switch (viewport.screenType) {
+                    case 'phone':
+                        rightIndex = leftIndex;
+                        break;
+                    
+                    case 'tablet':
+                        if (viewport.orientation == 'portrait') {
+                            rightIndex = leftIndex;
+                        }
+                        else {
+                            rightIndex = leftIndex + 1;
+                        }
+                        break;
+
+                    case 'computer':
+                        rightIndex = leftIndex + 1;
+                        break;
+
+                    default:
+                        break;
+                }
+
+                //console.log(offsetIndex, leftIndex, rightIndex);
+
                 wrapScroll();
             }
             else if (offsetIndex == repos.length + 2) {
                 offsetIndex = -repos.length + 2
                 leftIndex = repos.length - 2;
-                rightIndex = leftIndex + 1;
+
+                switch (viewport.screenType) {
+                    case 'phone':
+                        rightIndex = leftIndex;
+                        break;
+                    
+                    case 'tablet':
+                        if (viewport.orientation == 'portrait') {
+                            rightIndex = leftIndex;
+                        }
+                        else {
+                            rightIndex = leftIndex + 1;
+                        }
+                        break;
+
+                    case 'computer':
+                        rightIndex = leftIndex + 1;
+                        break;
+
+                    default:
+                        break;
+                }
+
+                //console.log(offsetIndex, leftIndex, rightIndex);
+
                 wrapScroll();
             }
 
@@ -251,7 +419,7 @@ async function displayGithubRepos() {
         if (intervalId) {
             clearInterval(intervalId);
         }
-        //intervalId = setInterval(() => scrollRepos(1), 5000);
+        intervalId = setInterval(() => scrollRepos(1), 5000);
     }
 
     resetInterval();
@@ -288,8 +456,6 @@ async function initAnimEnd(event) {
 }
 
 document.addEventListener('DOMContentLoaded', async function(event) {
-    console.log(window.innerHeight, window.innerWidth);
-
     const aboutLogos = document.querySelector('.about .header .logos').children;
     const skillsLogos = document.querySelector('.skills .header .logos').children;
     const delayIncrement = 0.1;

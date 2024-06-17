@@ -50,7 +50,7 @@ body {
 h1 {
     font-family: "Barlow";
     font-size: 3.5vh;
-    text-shadow: 0px 5px 4px #050404;
+    text-shadow: 0px 2px 4px #050404;
     margin-top: auto;
     margin-bottom: 1vh;
 }
@@ -101,7 +101,7 @@ a {
     grid-auto-flow: column;
     grid-auto-columns: min-content;
     gap: 3vh;
-    text-shadow: 0px 5px 4px #050404;
+    text-shadow: 0px 2px 4px #050404;
 }
 
 .logos i {
@@ -220,8 +220,175 @@ a {
     align-self: center;
 }
 
+/* Phones (landscape) */
 @media only screen
-and (min-width: 1224px) {
+and (orientation: landscape) {
+    h1 {
+        font-size: 5vh;
+    }
+
+    h2 {
+        font-size: 3vh;
+        margin-bottom: 2vh;
+    }
+
+    p {
+        font-size: 1.5vh;
+    }
+
+    .logos {
+        gap: 3.5vh;
+        text-shadow: 0px 2px 4px #050404;
+    }
+
+    .logos i {
+        height: 5vh;
+        width: 3vh;
+        font-size: 5vh;
+    }
+
+    .repo-inner h1 {
+        font-size: 4vh;
+    }
+
+    .repo-inner h2 {
+        font-size: 3vh;
+    }
+
+    .repo-language p {
+        font-size: 3vh;
+    }
+
+    .language {
+        height: 2vh;
+        width: 2vh;
+    }
+}
+
+/* iPads (landscape) */
+@media only screen
+and (min-device-width: 768px) 
+and (max-device-width: 1080px) 
+and (min-width: 1024px)
+and (orientation: landscape) {
+    .layout {
+        padding-top: 20px;
+    }
+
+    h1 {
+        font-size: 5vh;
+        text-shadow: 0px 5px 4px #050404;
+    }
+
+    h2 {
+        font-size: 3vh;
+        margin-bottom: 3vh;
+    }
+
+    p {
+        font-size: 2vh;
+    }
+
+    .logos {
+        gap: 3vh;
+        text-shadow: 0px 5px 4px #050404;
+    }
+
+    .logos i {
+        height: 5vh;
+        width: 3vh;
+        font-size: 5vh;
+    }
+
+    .repos-arrow i {
+        font-size: 3em;
+    }
+
+    .repos-list .repo {
+        flex: 0 0 calc(50% - 10px);
+    }
+
+    .repo-inner h1 {
+        font-size: 4vh;
+    }
+
+    .repo-inner h2 {
+        font-size: 2vh;
+    }
+
+    .repo-language p {
+        font-size: 1.5vh;
+    }
+
+    .language {
+        height: 1vh;
+        width: 1vh;
+    }
+}
+
+/* iPads (portrait) */
+@media only screen
+and (min-device-width: 768px) 
+and (max-device-width: 1080px) 
+and (orientation: portrait) {
+    .layout {
+        padding-top: 20px;
+    }
+
+    h1 {
+        font-size: 4vh;
+        text-shadow: 0px 5px 4px #050404;
+    }
+
+    h2 {
+        font-size: 2vh;
+        margin-bottom: 1.5vh;
+    }
+
+    p {
+        font-size: 1.5vh;
+    }
+
+    .logos {
+        gap: 3vh;
+        text-shadow: 0px 5px 4px #050404;
+    }
+
+    .logos i {
+        height: 4vh;
+        width: 2.5vw;
+        font-size: 4vh;
+    }
+
+    .repos-arrow i {
+        font-size: 2em;
+    }
+
+    .repos-list .repo {
+        flex: 0 0 calc(100% - 10px);
+    }
+
+    .repo-inner h1 {
+        font-size: 3vh;
+    }
+
+    .repo-inner h2 {
+        font-size: 2vh;
+    }
+
+    .repo-language p {
+        font-size: 1.5vh;
+    }
+
+    .language {
+        height: 1vh;
+        width: 1vh;
+    }
+}
+
+/* Monitors */
+@media only screen
+and (min-width: 1367px) {
     .layout {
         width: 70%;
         padding: 40px;
@@ -229,6 +396,7 @@ and (min-width: 1224px) {
 
     h1 {
         font-size: 5vh;
+        text-shadow: 0px 5px 4px #050404;
     }
 
     h2 {
@@ -242,6 +410,7 @@ and (min-width: 1224px) {
 
     .logos {
         gap: 3vh;
+        text-shadow: 0px 5px 4px #050404;
     }
 
     .logos i {
@@ -270,6 +439,10 @@ and (min-width: 1224px) {
         font-size: 1.5vh;
     }
 
+    .language {
+        height: 1vh;
+        width: 1vh;
+    }
 }
 
 .fa-github,
@@ -309,8 +482,8 @@ and (min-width: 1224px) {
 }
 
 .logos .devicon-cplusplus-plain {
-    --sizeX: 0.88;
-    --sizeY: 0.88;
+    --sizeX: 0.92;
+    --sizeY: 0.92;
 }
 
 .fa-github:hover,
