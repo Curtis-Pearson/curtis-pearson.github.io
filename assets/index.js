@@ -60,7 +60,7 @@ function getViewport() {
     }
 
     /* DEBUG */
-    console.log(width, height, screenType, orientation);
+    console.log("get viewport w h st o: ", width, height, screenType, orientation);
 
     return {
         screenType: screenType,
@@ -103,15 +103,23 @@ async function displayGithubRepos() {
 
     const repoElems = reposListDiv.querySelectorAll('.repo');
     const repoElem = repoElems[0];
+    const reposTrack = document.querySelector('.repos-track');
     const repoArrow = document.querySelector('.repos-arrow i');
     const repoMargin = parseFloat(window.getComputedStyle(repoElem).marginRight);
     let arrowWidth = parseFloat(window.getComputedStyle(repoArrow).fontSize);
     let listWidth = parseFloat(window.getComputedStyle(reposListDiv).width);
+    let trackWidth = parseFloat(window.getComputedStyle(reposTrack).width);
     let originOffset = 0;
-    let moveAmount = (listWidth - arrowWidth) / 2 + repoMargin - (1.6666 * (arrowWidth / 13.3333));
-    
+    let screenOffset = 15;
+    let moveAmount;
+    let offsetIndex = 0;
+    let leftIndex = ((repos.length * 3) / 2) - 1;
+    let rightIndex = leftIndex + 1;
+    let isMoving = false;
+    let intervalId = null;
+    let viewport = getViewport();
+
     /* DEBUG */
-    const reposTrack = document.querySelector('.repos-track');
     const trackRect = reposTrack.getBoundingClientRect();
     let prevIndex = 7;
     let nextIndex = 9;
@@ -121,34 +129,24 @@ async function displayGithubRepos() {
     let nextRect = nextRepo.getBoundingClientRect();
     let prevDist = prevRect.left - trackRect.left;
     let nextDist = nextRect.left - trackRect.left;
-
-    console.log(prevDist, nextDist, moveAmount);
-
-
-    let offsetIndex = 0;
-    let leftIndex = ((repos.length * 3) / 2) - 1;
-    let rightIndex = leftIndex + 1;
-    let isMoving = false;
-    let intervalId = null;
-
-    let viewport = getViewport();
+    console.log("trackWidth: ", trackWidth);
+    /* DEBUG */
 
     function getOriginOffset() {
-        const reposTrack = document.querySelector('.repos-track');
         const trackRect = reposTrack.getBoundingClientRect();
-        const rect = repoElems[leftIndex].getBoundingClientRect();
-        originOffset = rect.left - trackRect.left + repoMargin + 1.6666;
+        const repoRect = repoElems[leftIndex].getBoundingClientRect();
+        originOffset = repoRect.left - trackRect.left + repoMargin;
 
         /* DEBUG */
-        console.log(originOffset, "origin offset");
+        console.log("originOffset: ", originOffset);
 
         return originOffset;
     }
 
-    function setPhone() {
+    function setPortrait() {
         rightIndex = leftIndex;
         originOffset = getOriginOffset();
-        moveAmount = (listWidth - arrowWidth) + repoMargin - (1.6666 * (arrowWidth / 13.3333)) - 3.3333;
+        moveAmount = trackWidth - (screenOffset);
 
         reposListDiv.style.transition = "transform 0s";
         reposListDiv.style.transform = `translateX(${-originOffset}px)`;
@@ -157,22 +155,35 @@ async function displayGithubRepos() {
     switch (viewport.screenType) {
         case 'phone':
             if (viewport.orientation == 'portrait') {
-                setPhone();
+                screenOffset = 17;
+                setPortrait();
+            }
+            else {
+                screenOffset = 3.5;
+                moveAmount = (trackWidth / 2) - screenOffset;
             }
             break;
 
         case 'tablet':
             if (viewport.orientation == 'portrait') {
-                setPhone();
+                screenOffset = 14;
+                setPortrait();
+            }
+            else {
+                screenOffset = 7;
+                moveAmount = (trackWidth / 2) - screenOffset;
             }
             break;
 
         case 'computer':
+            moveAmount = (trackWidth / 2) - screenOffset;
             break;
 
         default: 
             break;
     }
+
+    console.log("prevDist nextDis moveAmount: ", prevDist, nextDist, moveAmount);
 
     function wrapScroll() {
         repoElems[leftIndex].style.transition = "opacity 0s";
@@ -207,9 +218,11 @@ async function displayGithubRepos() {
         resetInterval();
     });
 
+
+
     /* DEBUG */
-    let li = 8;
-    let ri = 8;
+    let li = leftIndex;
+    let ri = rightIndex;
     const elements = document.querySelectorAll('.repo');
     let elementLeft = elements[li];
     let elementRight = elements[ri];
@@ -222,8 +235,10 @@ async function displayGithubRepos() {
     let prevLeft = distLeft;
     let prevRight = distRight;
 
-    console.log(distLeft, distRight, diff);
-    console.log("move amount:", moveAmount);
+    console.log("distLeft distRight diff: ", distLeft, distRight, diff);
+    console.log("moveAmount:", moveAmount);
+
+
 
     window.addEventListener('resize', () => {
         resetInterval();
@@ -233,7 +248,7 @@ async function displayGithubRepos() {
         viewport = getViewport();
 
         /* DEBUG */
-        console.log(repoMargin, "repo margin");
+        console.log("repoMargin: ", repoMargin);
 
         switch (viewport.screenType) {
             case "phone":
@@ -289,9 +304,9 @@ async function displayGithubRepos() {
         }
 
         /* DEBUG */
-        console.log("screen resize, move amount:", moveAmount);
+        console.log("screen resize, moveAmount:", moveAmount);
         console.log("indexes: ", leftIndex, rightIndex);
-        console.log((moveAmount * -offsetIndex) - originOffset);
+        console.log("calculated move: ", (moveAmount * -offsetIndex) - originOffset);
 
         wrapScroll();
     });
@@ -345,9 +360,9 @@ async function displayGithubRepos() {
             let diffRight = distRight - prevRight;
             prevLeft = distLeft;
             prevRight = distRight;
-    
-            console.log(distLeft, distRight, diff, diffLeft, diffRight, (-diffLeft + diffRight));
+            console.log("moved", distLeft, distRight, diff, diffLeft, diffRight, (-diffLeft + diffRight));
             console.log(offsetIndex, leftIndex, rightIndex);
+            /* DEBUG */
 
             if (offsetIndex == -repos.length - 2) {
                 offsetIndex = repos.length - 2;
@@ -355,9 +370,6 @@ async function displayGithubRepos() {
 
                 switch (viewport.screenType) {
                     case 'phone':
-                        rightIndex = leftIndex;
-                        break;
-                    
                     case 'tablet':
                         if (viewport.orientation == 'portrait') {
                             rightIndex = leftIndex;
@@ -386,9 +398,6 @@ async function displayGithubRepos() {
 
                 switch (viewport.screenType) {
                     case 'phone':
-                        rightIndex = leftIndex;
-                        break;
-                    
                     case 'tablet':
                         if (viewport.orientation == 'portrait') {
                             rightIndex = leftIndex;
