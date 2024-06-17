@@ -21,7 +21,7 @@
 body {
     font-family: "Barlow";
     color: #eaeaea;
-    overflow: visible;
+    overflow: hidden;
 }
 
 .container {
