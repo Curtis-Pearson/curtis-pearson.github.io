@@ -216,6 +216,7 @@ async function displayGithubRepos() {
         resetInterval();
     });
     window.addEventListener('resize', () => {
+        resetInterval();
         viewport = getViewport();
 
         if (viewport.screenType == 'phone' || viewport.screenType == 'tablet') {
