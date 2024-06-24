@@ -59,377 +59,183 @@ function getViewport() {
         screenType = 'computer';
     }
 
-    /* DEBUG */
-    console.log("get viewport w h st o: ", width, height, screenType, orientation);
-
     return {
         screenType: screenType,
         orientation: orientation
     };
 }
 
+let display = [0, 1];
+
 async function displayGithubRepos() {
-    const reposListDiv = document.querySelector('.repos-list');
-    reposListDiv.innerHTML = '';
+    const reposList = document.querySelector('.repos-list');
+    let repoDivs = reposList.children;
+    let viewport = getViewport();
+    let intervalId = setInterval(() => updateRepos("right"), 5000);
 
-    for (let i = 0; i < 3; i++) {
-        repos.forEach(repo => {
-            let languages = ``;
-
-            repo.languages.forEach(language => {
-                languages += `
-                    <div class="repo-language">
-                        <div class="language ${language.toLowerCase().replace('#', 's')}"></div>
-                        <p>${language}</p>
-                    </div>
-                `;
-            });
-
-            const repoDiv = document.createElement('div');
-            repoDiv.className = 'repo';
-            repoDiv.innerHTML = `
-                <div class="repo-inner">
-                    <a href="${repo.url}">
-                        <h1>${repo.name}</h1>
-                    </a>
-                    <h2>${repo.desc}</h2>
-                    <div class="repo-languages">${languages}</div>
+    function createRepoDiv(index) {
+        const repo = repos[display[index]];
+        let languages = ``;
+    
+        repo.languages.forEach(language => {
+            languages += `
+                <div class="repo-language">
+                    <div class="language ${language.toLowerCase().replace('#', 's')}"></div>
+                    <p>${language}</p>
                 </div>
             `;
-
-            reposListDiv.appendChild(repoDiv);
         });
+    
+        const repoDiv = document.createElement('div');
+        repoDiv.className = 'repo';
+        repoDiv.innerHTML = `
+            <div class="repo-inner">
+                <a href="${repo.url}">
+                    <h1>${repo.name}</h1>
+                </a>
+                <h2>${repo.desc}</h2>
+                <div class="repo-languages">${languages}</div>
+            </div>
+        `;
+        
+        return repoDiv;
     }
 
-    const repoElems = reposListDiv.querySelectorAll('.repo');
-    const repoElem = repoElems[0];
-    const reposTrack = document.querySelector('.repos-track');
-    const repoArrow = document.querySelector('.repos-arrow i');
-    const repoMargin = parseFloat(window.getComputedStyle(repoElem).marginRight);
-    let arrowWidth = parseFloat(window.getComputedStyle(repoArrow).fontSize);
-    let listWidth = parseFloat(window.getComputedStyle(reposListDiv).width);
-    let trackWidth = parseFloat(window.getComputedStyle(reposTrack).width);
-    let originOffset = 0;
-    let screenOffset = 15;
-    let moveAmount;
-    let offsetIndex = 0;
-    let leftIndex = ((repos.length * 3) / 2) - 1;
-    let rightIndex = leftIndex + 1;
+    reposList.appendChild(createRepoDiv(0));
+    reposList.appendChild(createRepoDiv(1));
+    repoDivs[0].style.opacity = 1;
+    repoDivs[1].style.opacity = 1;
+
     let isMoving = false;
-    let intervalId = null;
-    let viewport = getViewport();
 
-    /* DEBUG */
-    const trackRect = reposTrack.getBoundingClientRect();
-    let prevIndex = 7;
-    let nextIndex = 9;
-    let prevRepo = reposListDiv.children[prevIndex];
-    let nextRepo = reposListDiv.children[nextIndex];
-    let prevRect = prevRepo.getBoundingClientRect();
-    let nextRect = nextRepo.getBoundingClientRect();
-    let prevDist = prevRect.left - trackRect.left;
-    let nextDist = nextRect.left - trackRect.left;
-    console.log("trackWidth: ", trackWidth);
-    /* DEBUG */
+    function updateRepos(dir) {
+        if (isMoving) {
+            return;
+        }
 
-    function getOriginOffset() {
-        const trackRect = reposTrack.getBoundingClientRect();
-        const repoRect = repoElems[leftIndex].getBoundingClientRect();
-        originOffset = repoRect.left - trackRect.left + repoMargin;
+        const dist = parseFloat(window.getComputedStyle(repoDivs[0]).width) + 20;
+        isMoving = true;
+        repoDivs = reposList.children;
 
-        /* DEBUG */
-        console.log("originOffset: ", originOffset);
+        switch (dir) {
+            case "right":
+                for (let i = 0; i < display.length; i++) {
+                    display[i]++;
+                    if (display[i] >= repos.length) {
+                        display[i] = 0;
+                    }
+                }
 
-        return originOffset;
+                reposList.insertAdjacentElement("beforeend", createRepoDiv(1));
+                reposList.offsetHeight;
+
+                for (let j = 0; j < repoDivs.length; j++) {
+                    repoDivs[j].style.transition = 'transform 0.8s ease-in-out, opacity 0.8s ease-in-out';
+                    repoDivs[j].style.transform = `translateX(${-dist}px)`;
+                }
+
+                repoDivs[0].style.opacity = 0;
+                repoDivs[1].style.opacity = 1;
+                repoDivs[2].style.opacity = 1;
+
+                setTimeout(function() {
+                    for (let j = 0; j < repoDivs.length; j++) {
+                        repoDivs[j].style.transition = 'transform 0s, opacity 0s';
+                        repoDivs[j].style.transform = `translateX(0%)`;
+                    }
+                    repoDivs[0].remove();
+                    isMoving = false;
+                }, 1000);
+
+                break;
+
+            case "left":
+                for (let i = 0; i < display.length; i++) {
+                    display[i]--;
+    
+                    if (display[i] < 0) {
+                        display[i] = repos.length - 1;
+                    }
+                }
+                
+                reposList.insertAdjacentElement("afterbegin", createRepoDiv(0));
+                reposList.offsetHeight;
+
+                for (let j = 0; j < repoDivs.length; j++) {
+                    repoDivs[j].style.transition = 'transform 0s, opacity 0s';
+                    repoDivs[j].style.transform = `translateX(${-dist}px)`;
+                }
+                
+                reposList.offsetHeight;
+
+                for (let j = 0; j < repoDivs.length; j++) {
+                    repoDivs[j].style.transition = 'transform 0.8s ease-in-out, opacity 0.8s ease-in-out';
+                    repoDivs[j].style.transform = `translateX(0%)`;
+                }
+
+                repoDivs[0].style.opacity = 1;
+                repoDivs[2].style.opacity = 0;
+
+                if (viewport.screenType == 'phone' || viewport.screenType == 'tablet') {
+                    if (viewport.orientation == 'portrait') {
+                        repoDivs[1].style.opacity = 0;
+                    }
+                }
+
+                setTimeout(function() {
+                    repoDivs[2].remove();
+                    repoDivs[0].style.transition = 'transform 0s, opacity 0s';
+                    repoDivs[1].style.transition = 'transform 0s, opacity 0s';
+                    isMoving = false;
+                }, 800);
+                
+                break;
+
+            default:
+                isMoving = false;
+                break;
+        }
     }
-
-    function setPortrait() {
-        rightIndex = leftIndex;
-        originOffset = getOriginOffset();
-        moveAmount = trackWidth - (screenOffset);
-
-        reposListDiv.style.transition = "transform 0s";
-        reposListDiv.style.transform = `translateX(${-originOffset}px)`;
-    }
-
-    switch (viewport.screenType) {
-        case 'phone':
-            if (viewport.orientation == 'portrait') {
-                screenOffset = 17;
-                setPortrait();
-            }
-            else {
-                screenOffset = 3.5;
-                moveAmount = (trackWidth / 2) - screenOffset;
-            }
-            break;
-
-        case 'tablet':
-            if (viewport.orientation == 'portrait') {
-                screenOffset = 14;
-                setPortrait();
-            }
-            else {
-                screenOffset = 7;
-                moveAmount = (trackWidth / 2) - screenOffset;
-            }
-            break;
-
-        case 'computer':
-            moveAmount = (trackWidth / 2) - screenOffset;
-            break;
-
-        default: 
-            break;
-    }
-
-    console.log("prevDist nextDis moveAmount: ", prevDist, nextDist, moveAmount);
-
-    function wrapScroll() {
-        repoElems[leftIndex].style.transition = "opacity 0s";
-        repoElems[rightIndex].style.transition = "opacity 0s";
-        repoElems[leftIndex].style.opacity = 1;
-        repoElems[rightIndex].style.opacity = 1;
-
-        reposListDiv.style.transition = "transform 0s";
-        reposListDiv.style.transform = `translateX(${(moveAmount * -offsetIndex) - originOffset}px)`;
-    }
-
-    repoElems[leftIndex].style.opacity = 1;
-    repoElems[rightIndex].style.opacity = 1;
 
     const prevButton = document.querySelector('.repos-arrow.prev');
     const nextButton = document.querySelector('.repos-arrow.next');
     const reposWrapper = document.querySelector('.repos-wrapper');
 
     prevButton.addEventListener('click', () => { 
-        scrollRepos(-1);
+        updateRepos("left");
         resetInterval();
     });
     nextButton.addEventListener('click', () => {
-        scrollRepos(1);
+        updateRepos("right");
         resetInterval();
     });
-
-    reposWrapper.addEventListener('mouseenter', () => {
+    reposWrapper.addEventListener('mouseover', () => {
         clearInterval(intervalId);
     });
     reposWrapper.addEventListener('mouseleave', () => {
         resetInterval();
     });
-
-
-
-    /* DEBUG */
-    let li = leftIndex;
-    let ri = rightIndex;
-    const elements = document.querySelectorAll('.repo');
-    let elementLeft = elements[li];
-    let elementRight = elements[ri];
-    const wrapperRect = reposTrack.getBoundingClientRect();
-    let elementLeftRect = elementLeft.getBoundingClientRect();
-    let elementRightRect = elementRight.getBoundingClientRect();
-    let distLeft = elementLeftRect.left - wrapperRect.left;
-    let distRight = wrapperRect.right - elementRightRect.right;
-    let diff = distLeft - distRight;
-    let prevLeft = distLeft;
-    let prevRight = distRight;
-
-    console.log("distLeft distRight diff: ", distLeft, distRight, diff);
-    console.log("moveAmount:", moveAmount);
-
-
-
     window.addEventListener('resize', () => {
-        resetInterval();
-
-        arrowWidth = parseFloat(window.getComputedStyle(repoArrow).fontSize);
-        listWidth = parseFloat(window.getComputedStyle(reposListDiv).width);
         viewport = getViewport();
 
-        /* DEBUG */
-        console.log("repoMargin: ", repoMargin);
-
-        switch (viewport.screenType) {
-            case "phone":
-                if (viewport.orientation == "portrait") {
-                    moveAmount = (listWidth - arrowWidth) + repoMargin - (1.6666 * (arrowWidth / 13.3333)) + 30;
-                    originOffset = -moveAmount / 2;
-                    rightIndex = leftIndex;
-
-                    repoElems[rightIndex].style.transition = "opacity 0s";
-                    repoElems[rightIndex].style.opacity = 0;
-                }
-                else {
-                    moveAmount = (listWidth - arrowWidth) / 2 + repoMargin - (1.6666 * (arrowWidth / 13.3333)) + 25;
-                    originOffset = 0;
-                    rightIndex = leftIndex + 1;
-
-                    repoElems[rightIndex].style.transition = "opacity 0s";
-                    repoElems[rightIndex].style.opacity = 1;
-                }
-
-                break;
-    
-            case "tablet":
-                if (viewport.orientation == "portrait") {
-                    moveAmount = (listWidth - arrowWidth) + repoMargin - (1.6666 * (arrowWidth / 13.3333)) + 30;
-                    originOffset = -moveAmount / 2;
-                    rightIndex = leftIndex;
-
-                    repoElems[rightIndex].style.transition = "opacity 0s";
-                    repoElems[rightIndex].style.opacity = 0;
-                }
-                else {
-                    moveAmount = (listWidth - arrowWidth) / 2 + repoMargin - (1.6666 * (arrowWidth / 13.3333)) + 25;
-                    originOffset = 0;
-                    rightIndex = leftIndex + 1;
-
-                    repoElems[rightIndex].style.transition = "opacity 0s";
-                    repoElems[rightIndex].style.opacity = 1;
-                }
-                break;
-    
-            case "computer":
-                moveAmount = (listWidth - arrowWidth) / 2 + repoMargin - (1.6666 * (arrowWidth / 13.3333)) + 25;
-                originOffset = 0;
-                rightIndex = leftIndex + 1;
-
-                repoElems[rightIndex].style.transition = "opacity 0s";
-                repoElems[rightIndex].style.opacity = 1;
-                break;
-    
-            default: 
-                break;
+        if (viewport.screenType == 'phone' || viewport.screenType == 'tablet') {
+            if (viewport.orientation == 'portrait') {
+                repoDivs[1].style.opacity = 0;
+            }
+            else {
+                repoDivs[1].style.opacity = 1;
+            }
         }
-
-        /* DEBUG */
-        console.log("screen resize, moveAmount:", moveAmount);
-        console.log("indexes: ", leftIndex, rightIndex);
-        console.log("calculated move: ", (moveAmount * -offsetIndex) - originOffset);
-
-        wrapScroll();
+        else {
+            repoDivs[1].style.opacity = 1;
+        }
     });
-
-    const transitionStyle = "0.5s ease-in-out";
-
-    function scrollRepos(dir) {
-        if (isMoving) {
-            return;
-        }
-        
-        offsetIndex += dir;
-        isMoving = true;
-
-        reposListDiv.style.transition = `transform ${transitionStyle}`;
-        reposListDiv.style.transform = `translateX(${(moveAmount * -offsetIndex) - originOffset}px)`;
-
-        if (dir == 1) {
-            repoElems[leftIndex].style.transition = `opacity ${transitionStyle}`;
-            repoElems[leftIndex].style.opacity = 0;
-
-            leftIndex++;
-            rightIndex++;
-
-            repoElems[rightIndex].style.transition = `opacity ${transitionStyle}`;
-            repoElems[rightIndex].style.opacity = 1;
-        }
-        else if (dir == -1) {
-            repoElems[rightIndex].style.transition = `opacity ${transitionStyle}`;
-            repoElems[rightIndex].style.opacity = 0;
-
-            leftIndex--;
-            rightIndex--;
-
-            repoElems[leftIndex].style.transition = `opacity ${transitionStyle}`;
-            repoElems[leftIndex].style.opacity = 1;
-        }
-
-        reposListDiv.addEventListener('transitionend', () => {
-            /* DEBUG */
-            li += dir;
-            ri += dir;
-            elementLeft = elements[li];
-            elementRight = elements[ri];
-            elementLeftRect = elementLeft.getBoundingClientRect();
-            elementRightRect = elementRight.getBoundingClientRect();
-            distLeft = elementLeftRect.left - wrapperRect.left;
-            distRight = wrapperRect.right - elementRightRect.right;
-            diff = distLeft - distRight;
-            let diffLeft = distLeft - prevLeft;
-            let diffRight = distRight - prevRight;
-            prevLeft = distLeft;
-            prevRight = distRight;
-            console.log("moved", distLeft, distRight, diff, diffLeft, diffRight, (-diffLeft + diffRight));
-            console.log(offsetIndex, leftIndex, rightIndex);
-            /* DEBUG */
-
-            if (offsetIndex == -repos.length - 2) {
-                offsetIndex = repos.length - 2;
-                leftIndex = repos.length * 2;
-
-                switch (viewport.screenType) {
-                    case 'phone':
-                    case 'tablet':
-                        if (viewport.orientation == 'portrait') {
-                            rightIndex = leftIndex;
-                        }
-                        else {
-                            rightIndex = leftIndex + 1;
-                        }
-                        break;
-
-                    case 'computer':
-                        rightIndex = leftIndex + 1;
-                        break;
-
-                    default:
-                        break;
-                }
-
-                /* DEBUG */
-                console.log(offsetIndex, leftIndex, rightIndex);
-
-                wrapScroll();
-            }
-            else if (offsetIndex == repos.length + 2) {
-                offsetIndex = -repos.length + 2
-                leftIndex = repos.length - 2;
-
-                switch (viewport.screenType) {
-                    case 'phone':
-                    case 'tablet':
-                        if (viewport.orientation == 'portrait') {
-                            rightIndex = leftIndex;
-                        }
-                        else {
-                            rightIndex = leftIndex + 1;
-                        }
-                        break;
-
-                    case 'computer':
-                        rightIndex = leftIndex + 1;
-                        break;
-
-                    default:
-                        break;
-                }
-
-                /* DEBUG */
-                console.log(offsetIndex, leftIndex, rightIndex);
-
-                wrapScroll();
-            }
-
-            isMoving = false;
-        }, { once: true });
-    }
 
     function resetInterval() {
         if (intervalId) {
             clearInterval(intervalId);
         }
-        //intervalId = setInterval(() => scrollRepos(1), 5000);
+        intervalId = setInterval(() => updateRepos("right"), 5000);
     }
 
     resetInterval();

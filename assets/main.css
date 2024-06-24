@@ -152,18 +152,19 @@ a {
 .repos-list {
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: start;
     box-sizing: border-box;
 }
 
 .repos-list .repo {
     flex: 0 0 calc(100% - 10px);
-    margin: 10px;
+    margin-right: 20px;
     height: 12em;
     border: 2px solid #893168;
     background: #4A1942;
     box-sizing: border-box;
     opacity: 0;
+    will-change: transform, opacity;
 }
 
 .repo-inner {
