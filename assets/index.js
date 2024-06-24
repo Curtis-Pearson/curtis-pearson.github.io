@@ -197,6 +197,13 @@ async function displayGithubRepos() {
         }
     }
 
+    function resetInterval() {
+        if (intervalId) {
+            clearInterval(intervalId);
+        }
+        intervalId = setInterval(() => updateRepos("right"), 5000);
+    }
+
     const prevButton = document.querySelector('.repos-arrow.prev');
     const nextButton = document.querySelector('.repos-arrow.next');
     const reposWrapper = document.querySelector('.repos-wrapper');
@@ -231,13 +238,6 @@ async function displayGithubRepos() {
             repoDivs[1].style.opacity = 1;
         }
     });
-
-    function resetInterval() {
-        if (intervalId) {
-            clearInterval(intervalId);
-        }
-        intervalId = setInterval(() => updateRepos("right"), 5000);
-    }
 
     resetInterval();
 }
