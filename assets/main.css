@@ -18,11 +18,10 @@
     src: url("./fonts/Barlow-Thin.ttf");
 }
 
-body {
+html, body {
     font-family: "Barlow";
     color: #eaeaea;
     background: linear-gradient(-45deg, #2E1C2B, #4A1942);
-    background-blend-mode:multiply;
     background-size: 100% 100%;
     overflow: auto;
 }
@@ -78,7 +77,7 @@ a {
     width: 100%;
     align-items: center;
     display: grid;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: 1fr 1fr auto;
     column-gap: 1em;
 }
 
@@ -98,11 +97,17 @@ a {
 }
 
 .logos {
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: min-content;
+    display: flex;
     gap: 1.3em;
+    justify-content: flex-end;
+    align-items: center;
     text-shadow: 0px 2px 4px #050404;
+}
+
+.logos a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .logos i {
@@ -112,9 +117,6 @@ a {
     width: 0.3em;
     font-size: 1.5em;
     opacity: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
 .repos-wrapper {
@@ -257,7 +259,6 @@ and (orientation: landscape) {
 
     .repos-list .repo {
         flex: 0 0 calc(50% - 10px);
-        height: 12em;
     }
 
     .repo-inner h1 {
@@ -278,7 +279,7 @@ and (orientation: landscape) {
     }
 }
 
-/* iPads (landscape) */
+/* Tablets (landscape) */
 @media only screen
 and (min-device-width: 768px) 
 and (max-device-width: 1080px) 
@@ -339,7 +340,7 @@ and (orientation: landscape) {
     }
 }
 
-/* iPads (portrait) */
+/* Tablets (portrait) */
 @media only screen
 and (min-device-width: 768px) 
 and (max-device-width: 1080px) 
