@@ -103,8 +103,22 @@ async function displayGithubRepos() {
 
     reposList.appendChild(createRepoDiv(0));
     reposList.appendChild(createRepoDiv(1));
+    
     repoDivs[0].style.opacity = 1;
-    repoDivs[1].style.opacity = 1;
+
+    switch (viewport.screenType) {
+        case "phone":
+        case "tablet":
+            if (viewport.orientation == "landscape") {
+                repoDivs[1].style.opacity = 1;
+            }
+            break;
+        
+        case "computer":
+        default:
+            repoDivs[1].style.opacity = 1;
+            break;
+    }
 
     let isMoving = false;
 
@@ -136,7 +150,20 @@ async function displayGithubRepos() {
 
                 repoDivs[0].style.opacity = 0;
                 repoDivs[1].style.opacity = 1;
-                repoDivs[2].style.opacity = 1;
+
+                switch (viewport.screenType) {
+                    case "phone":
+                    case "tablet":
+                        if (viewport.orientation == "landscape") {
+                            repoDivs[2].style.opacity = 1;
+                        }
+                        break;
+                    
+                    case "computer":
+                    default:
+                        repoDivs[2].style.opacity = 1;
+                        break;
+                }
 
                 setTimeout(function() {
                     for (let j = 0; j < repoDivs.length; j++) {
